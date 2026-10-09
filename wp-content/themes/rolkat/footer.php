@@ -20,7 +20,7 @@ $privacy = get_page_by_path('privacy-policy');
                 <a class="brand" href="<?php echo esc_url(home_url('/')); ?>">
                     <span class="brand-mark" aria-hidden="true">R</span>
                     <span>
-                        <span class="brand-name">Rolkat Financial</span>
+                        <span class="brand-name" style="color:#fff;">ROLKAT</span>
                         <span class="brand-caption"><?php esc_html_e('Serving you better', 'rolkat'); ?></span>
                     </span>
                 </a>
@@ -63,11 +63,14 @@ $privacy = get_page_by_path('privacy-policy');
     </div>
 </footer>
 <?php if ($whatsapp_url) : ?>
-    <a class="whatsapp-float" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e('Chat on WhatsApp', 'rolkat'); ?>">
+    <a class="whatsapp-float" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e('Chat on WhatsApp +256 787 165 366', 'rolkat'); ?>">
         <span aria-hidden="true">WA</span>
         <span class="screen-reader-text"><?php esc_html_e('Chat on WhatsApp', 'rolkat'); ?></span>
     </a>
 <?php endif; ?>
+<div class="mobile-call-bar">
+    <a href="<?php echo esc_url(rolkat_tel_href($phone)); ?>"><?php esc_html_e('Call', 'rolkat'); ?> <?php echo esc_html($phone); ?></a>
+</div>
 <button type="button" class="back-to-top" id="back-to-top" aria-label="<?php esc_attr_e('Back to top', 'rolkat'); ?>" title="<?php esc_attr_e('Back to top', 'rolkat'); ?>">
     ↑
 </button>

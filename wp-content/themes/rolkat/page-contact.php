@@ -22,45 +22,6 @@ $contact_status = isset($_GET['contact_status']) ? sanitize_key(wp_unslash($_GET
         </header>
         <section class="section">
             <div class="container contact-layout">
-                <div>
-                    <div class="page-content">
-                        <?php the_content(); ?>
-                    </div>
-                    <div class="contact-details">
-                        <div class="contact-detail">
-                            <strong><?php esc_html_e('Call us', 'rolkat'); ?></strong>
-                            <a href="<?php echo esc_url(rolkat_tel_href($phone)); ?>"><?php echo esc_html($phone); ?></a>
-                        </div>
-                        <?php if ($whatsapp_url) : ?>
-                            <div class="contact-detail">
-                                <strong><?php esc_html_e('WhatsApp', 'rolkat'); ?></strong>
-                                <a class="button button--outline button--compact" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Chat on WhatsApp', 'rolkat'); ?></a>
-                            </div>
-                        <?php endif; ?>
-                        <div class="contact-detail">
-                            <strong><?php esc_html_e('Email', 'rolkat'); ?></strong>
-                            <a href="<?php echo esc_url('mailto:' . sanitize_email($email)); ?>"><?php echo esc_html($email); ?></a>
-                        </div>
-                        <div class="contact-detail">
-                            <strong><?php esc_html_e('Visit us', 'rolkat'); ?></strong>
-                            <span><?php echo nl2br(esc_html($address)); ?></span>
-                        </div>
-                        <div class="contact-detail">
-                            <strong><?php esc_html_e('Working hours', 'rolkat'); ?></strong>
-                            <span><?php echo esc_html($hours); ?></span>
-                        </div>
-                    </div>
-                    <?php if ($map !== '') : ?>
-                        <div class="map-embed">
-                            <iframe
-                                title="<?php esc_attr_e('ROLKAT office location map', 'rolkat'); ?>"
-                                src="<?php echo esc_url($map); ?>"
-                                loading="lazy"
-                                referrerpolicy="no-referrer-when-downgrade"
-                                allowfullscreen></iframe>
-                        </div>
-                    <?php endif; ?>
-                </div>
                 <form class="contact-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <?php if ($contact_status === 'sent') : ?>
                         <p class="notice" role="status"><?php esc_html_e('Thank you for contacting us. Your message has been sent.', 'rolkat'); ?></p>
@@ -105,6 +66,45 @@ $contact_status = isset($_GET['contact_status']) ? sanitize_key(wp_unslash($_GET
                     <button class="button" type="submit"><?php esc_html_e('Send message', 'rolkat'); ?></button>
                     <p class="form-note"><?php esc_html_e('By sending this form you agree that ROLKAT may contact you about your enquiry. See our privacy policy for how we handle personal data.', 'rolkat'); ?></p>
                 </form>
+                <div>
+                    <div class="page-content">
+                        <?php the_content(); ?>
+                    </div>
+                    <div class="hero-actions" style="margin-bottom:24px;">
+                        <?php if ($whatsapp_url) : ?>
+                            <a class="button" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('WhatsApp', 'rolkat'); ?></a>
+                        <?php endif; ?>
+                        <a class="button button--outline" href="<?php echo esc_url(rolkat_tel_href($phone)); ?>"><?php esc_html_e('Call', 'rolkat'); ?> <?php echo esc_html($phone); ?></a>
+                    </div>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <strong><?php esc_html_e('Visit us', 'rolkat'); ?></strong>
+                            <span><?php echo nl2br(esc_html($address)); ?></span>
+                        </div>
+                        <div class="contact-detail">
+                            <strong><?php esc_html_e('Phone / WhatsApp', 'rolkat'); ?></strong>
+                            <a href="<?php echo esc_url(rolkat_tel_href($phone)); ?>"><?php echo esc_html($phone); ?></a>
+                        </div>
+                        <div class="contact-detail">
+                            <strong><?php esc_html_e('Email', 'rolkat'); ?></strong>
+                            <a href="<?php echo esc_url('mailto:' . sanitize_email($email)); ?>"><?php echo esc_html($email); ?></a>
+                        </div>
+                        <div class="contact-detail">
+                            <strong><?php esc_html_e('Working hours', 'rolkat'); ?></strong>
+                            <span><?php echo esc_html($hours); ?></span>
+                        </div>
+                    </div>
+                    <?php if ($map !== '') : ?>
+                        <div class="map-embed">
+                            <iframe
+                                title="<?php esc_attr_e('ROLKAT office location map at Hanora Plaza, Zana', 'rolkat'); ?>"
+                                src="<?php echo esc_url($map); ?>"
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                allowfullscreen></iframe>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </section>
     <?php endwhile; ?>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="180" viewBox="0 0 240 180" role="img" aria-label="Modern house illustration placeholder">
+  <rect width="240" height="180" rx="18" fill="#FAFAF7"/>
+  <rect x="40" y="50" width="160" height="90" rx="8" fill="#0B1F3A" opacity="0.85"/>
+  <polygon points="40,50 120,18 200,50" fill="#F04E23"/>
+  <text x="24" y="160" fill="#475569" font-family="system-ui,sans-serif" font-size="11">Modern house · placeholder</text>
+</svg>

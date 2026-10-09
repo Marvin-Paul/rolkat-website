@@ -18,28 +18,63 @@ if (!$properties->have_posts()) {
         'orderby' => array('menu_order' => 'ASC', 'date' => 'DESC'),
     ));
 }
-$hero_title = get_theme_mod('rolkat_hero_title', __('Serving you better.', 'rolkat'));
-$hero_text = get_theme_mod(
-    'rolkat_hero_text',
-    __('Fast, fair loans and professional property services for everyday Ugandans and small businesses — from Entebbe Road in Zana.', 'rolkat')
-);
 $categories = rolkat_service_categories();
-$category_animations = array(
-    'loans' => 'finance-growth.json',
-    'property-management' => 'property-care.json',
-    'real-estate' => 'verified-location.json',
+$category_icons = array(
+    'loans' => 'banknote',
+    'property-management' => 'building-2',
+    'real-estate' => 'home',
 );
+$whatsapp_url = rolkat_whatsapp_url();
+$phone = rolkat_get_phone();
 ?>
 <main id="main-content">
-    <section class="hero">
-        <div class="container hero-inner">
-            <p class="brand-lockup"><?php esc_html_e('Rolkat Financial Services', 'rolkat'); ?></p>
-            <p class="eyebrow"><?php esc_html_e('Financial services · Property management · Real estate', 'rolkat'); ?></p>
-            <h1><?php echo esc_html($hero_title); ?></h1>
-            <p class="hero-copy"><?php echo esc_html($hero_text); ?></p>
-            <div class="hero-actions">
-                <a class="button" href="<?php echo esc_url(home_url('/contact/')); ?>"><?php esc_html_e('Contact us', 'rolkat'); ?></a>
-                <a class="button button--outline" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service')); ?>"><?php esc_html_e('Explore services', 'rolkat'); ?></a>
+    <section class="hero hero--split">
+        <div class="container hero-split">
+            <div class="hero-copy-block reveal">
+                <p class="eyebrow"><?php esc_html_e('ROLKAT Financial Services', 'rolkat'); ?></p>
+                <h1><?php esc_html_e('Quick loans. Trusted property services. Serving you better.', 'rolkat'); ?></h1>
+                <p class="hero-copy"><?php esc_html_e('Fast, flexible and respectful support for boda boda riders, market vendors, small shop owners, landlords and property buyers across Uganda.', 'rolkat'); ?></p>
+                <div class="hero-actions">
+                    <a class="button" href="<?php echo esc_url(home_url('/contact/?subject=Loans')); ?>"><?php esc_html_e('Get a Quick Loan', 'rolkat'); ?></a>
+                    <a class="button button--outline" href="<?php echo esc_url(get_post_type_archive_link('rolkat_property')); ?>"><?php esc_html_e('View Properties', 'rolkat'); ?></a>
+                </div>
+                <ul class="trust-chips" aria-label="<?php esc_attr_e('Trust highlights', 'rolkat'); ?>">
+                    <li><?php esc_html_e('24-hour approval', 'rolkat'); ?></li>
+                    <li><?php esc_html_e('Daily or weekly repayment', 'rolkat'); ?></li>
+                    <li><?php esc_html_e('Flexible terms', 'rolkat'); ?></li>
+                </ul>
+            </div>
+            <div class="hero-visual reveal reveal-delay-1" aria-hidden="false">
+                <div class="hero-collage">
+                    <img
+                        class="hero-collage__main"
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/placeholders/boda-rider.svg'); ?>"
+                        alt="<?php esc_attr_e('Boda boda rider in Kampala representing everyday borrowers ROLKAT serves', 'rolkat'); ?>"
+                        width="640"
+                        height="480"
+                        loading="eager"
+                    >
+                    <img
+                        class="hero-collage__secondary"
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/placeholders/market-vendor.svg'); ?>"
+                        alt="<?php esc_attr_e('Market vendor at a stall representing flexible daily lending', 'rolkat'); ?>"
+                        width="280"
+                        height="200"
+                        loading="lazy"
+                    >
+                    <img
+                        class="hero-collage__tertiary"
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/placeholders/modern-house.svg'); ?>"
+                        alt="<?php esc_attr_e('Modern house and apartment representing ROLKAT property services', 'rolkat'); ?>"
+                        width="240"
+                        height="180"
+                        loading="lazy"
+                    >
+                    <div class="hero-glass-card">
+                        <strong><?php esc_html_e('Approved in 24 hours', 'rolkat'); ?></strong>
+                        <span><?php esc_html_e('Clear terms before you sign', 'rolkat'); ?></span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -49,24 +84,20 @@ $category_animations = array(
             <div class="section-heading reveal">
                 <div>
                     <p class="eyebrow"><?php esc_html_e('What we do', 'rolkat'); ?></p>
-                    <h2><?php esc_html_e('Three connected service lines.', 'rolkat'); ?></h2>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('Three ways we serve you better.', 'rolkat'); ?></h2>
                 </div>
-                <p><?php esc_html_e('Whether you need quick credit, trusted property care or help buying and selling land, ROLKAT is built to serve you better.', 'rolkat'); ?></p>
+                <p><?php esc_html_e('Loans, property management and real estate — one trusted local partner on Entebbe Road.', 'rolkat'); ?></p>
             </div>
             <div class="pillar-grid reveal reveal-delay-1">
                 <?php foreach ($categories as $slug => $category) : ?>
                     <article class="pillar-card">
-                        <?php if (isset($category_animations[$slug])) : ?>
-                            <div
-                                class="lottie-visual"
-                                data-lottie-src="<?php echo esc_url(get_template_directory_uri() . '/assets/lottie/' . $category_animations[$slug]); ?>"
-                                aria-hidden="true"
-                            ></div>
-                        <?php endif; ?>
+                        <div class="icon-circle" aria-hidden="true">
+                            <i data-lucide="<?php echo esc_attr($category_icons[$slug] ?? 'circle'); ?>"></i>
+                        </div>
                         <h3><?php echo esc_html($category['label']); ?></h3>
                         <p><?php echo esc_html($category['summary']); ?></p>
-                        <p class="pillar-audience"><strong><?php esc_html_e('For:', 'rolkat'); ?></strong> <?php echo esc_html($category['audience']); ?></p>
-                        <a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service') . '#' . $slug); ?>"><?php esc_html_e('How to get started', 'rolkat'); ?></a>
+                        <a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service') . '#' . $slug); ?>"><?php esc_html_e('Learn more', 'rolkat'); ?></a>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -77,30 +108,50 @@ $category_animations = array(
         <div class="container">
             <div class="section-heading reveal">
                 <div>
-                    <p class="eyebrow"><?php esc_html_e('Why ROLKAT', 'rolkat'); ?></p>
-                    <h2><?php esc_html_e('Reasons to choose us.', 'rolkat'); ?></h2>
+                    <p class="eyebrow"><?php esc_html_e('Who we serve', 'rolkat'); ?></p>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('Built for everyday Ugandans.', 'rolkat'); ?></h2>
                 </div>
-                <p><?php esc_html_e('Practical support, clear communication and a local team that understands how you earn and grow.', 'rolkat'); ?></p>
             </div>
-            <div class="trust-grid reveal reveal-delay-1">
-                <?php foreach (rolkat_trust_points() as $point) : ?>
-                    <article class="trust-card">
-                        <h3><?php echo esc_html($point['title']); ?></h3>
-                        <p><?php echo esc_html($point['text']); ?></p>
-                    </article>
+            <ul class="audience-strip reveal reveal-delay-1">
+                <?php foreach (rolkat_audiences() as $audience) : ?>
+                    <li><?php echo esc_html($audience); ?></li>
                 <?php endforeach; ?>
-            </div>
+            </ul>
         </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="loan-process">
         <div class="container">
             <div class="section-heading reveal">
                 <div>
-                    <p class="eyebrow"><?php esc_html_e('Property opportunities', 'rolkat'); ?></p>
-                    <h2><?php esc_html_e('Featured listings.', 'rolkat'); ?></h2>
+                    <p class="eyebrow"><?php esc_html_e('How a loan works', 'rolkat'); ?></p>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('Four clear steps to funding.', 'rolkat'); ?></h2>
                 </div>
-                <p><?php esc_html_e('Browse current properties and enquire with our team for viewings or details.', 'rolkat'); ?></p>
+                <p><?php esc_html_e('Simple process, respectful service, and repayment that fits how you earn.', 'rolkat'); ?></p>
+            </div>
+            <ol class="loan-timeline reveal reveal-delay-1">
+                <?php foreach (rolkat_loan_steps() as $index => $step) : ?>
+                    <li class="loan-timeline__step">
+                        <span class="loan-timeline__number"><?php echo esc_html(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)); ?></span>
+                        <h3><?php echo esc_html($step['title']); ?></h3>
+                        <p><?php echo esc_html($step['text']); ?></p>
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+        </div>
+    </section>
+
+    <section class="section section--sand" id="properties">
+        <div class="container">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="eyebrow"><?php esc_html_e('Featured properties', 'rolkat'); ?></p>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('Homes, land and rentals worth a look.', 'rolkat'); ?></h2>
+                </div>
+                <p><?php esc_html_e('Browse current listings and enquire with our team for viewings or details.', 'rolkat'); ?></p>
             </div>
             <?php if ($properties->have_posts()) : ?>
                 <div class="card-grid reveal reveal-delay-1">
@@ -116,25 +167,56 @@ $category_animations = array(
         </div>
     </section>
 
-    <section class="section section--sand">
-        <div class="container split">
-            <div class="split-panel reveal">
-                <div class="split-panel-inner">
-                    <p class="eyebrow"><?php esc_html_e('Rolkat Financial Services SMC Ltd', 'rolkat'); ?></p>
-                    <h3><?php esc_html_e('Serving you better is more than a promise.', 'rolkat'); ?></h3>
-                    <p><?php esc_html_e('It is the care we bring to every conversation, decision and relationship.', 'rolkat'); ?></p>
+    <section class="section">
+        <div class="container">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="eyebrow"><?php esc_html_e('Why choose ROLKAT', 'rolkat'); ?></p>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('Trust you can feel.', 'rolkat'); ?></h2>
                 </div>
+                <p><?php esc_html_e('Practical support, clear communication and a local team that understands how you earn and grow.', 'rolkat'); ?></p>
             </div>
-            <div class="split-copy reveal reveal-delay-2">
-                <p class="eyebrow"><?php esc_html_e('About us', 'rolkat'); ?></p>
-                <h2><?php esc_html_e('Built for everyday Ugandans and small businesses.', 'rolkat'); ?></h2>
-                <p><?php esc_html_e('ROLKAT combines lending, property management and real estate so customers who need money and customers who own or want property can work with one trusted partner.', 'rolkat'); ?></p>
-                <ul class="check-list">
-                    <li><?php esc_html_e('Speed, honesty and transparency', 'rolkat'); ?></li>
-                    <li><?php esc_html_e('Fair, respectful service', 'rolkat'); ?></li>
-                    <li><?php esc_html_e('Discipline and accountability', 'rolkat'); ?></li>
-                </ul>
-                <a class="button" href="<?php echo esc_url(home_url('/about/')); ?>"><?php esc_html_e('Get to know us', 'rolkat'); ?></a>
+            <div class="trust-grid reveal reveal-delay-1">
+                <?php foreach (rolkat_trust_points() as $point) : ?>
+                    <article class="trust-card">
+                        <div class="icon-circle" aria-hidden="true"><i data-lucide="shield-check"></i></div>
+                        <h3><?php echo esc_html($point['title']); ?></h3>
+                        <p><?php echo esc_html($point['text']); ?></p>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+            <p class="licence-badge reveal"><?php esc_html_e('Licensed lender', 'rolkat'); ?> · <span><?php esc_html_e('[licence no. to be supplied]', 'rolkat'); ?></span></p>
+        </div>
+    </section>
+
+    <section class="section section--sand" aria-label="<?php esc_attr_e('Optional testimonials', 'rolkat'); ?>">
+        <div class="container">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="eyebrow"><?php esc_html_e('Optional', 'rolkat'); ?></p>
+                    <span class="section-title-accent" aria-hidden="true"></span>
+                    <h2><?php esc_html_e('What customers say.', 'rolkat'); ?></h2>
+                </div>
+                <p><?php esc_html_e('Placeholder testimonials — replace with real quotes when ready.', 'rolkat'); ?></p>
+            </div>
+            <div class="testimonial-grid reveal reveal-delay-1">
+                <?php
+                $placeholders = array(
+                    array('name' => 'Aisha N.', 'role' => 'Market vendor', 'quote' => 'Placeholder: daily repayment that matches my stall sales.'),
+                    array('name' => 'Joseph K.', 'role' => 'Boda rider', 'quote' => 'Placeholder: approved quickly when my motorcycle needed repairs.'),
+                    array('name' => 'Grace M.', 'role' => 'Landlord', 'quote' => 'Placeholder: clear monthly statements for my rental units.'),
+                );
+                foreach ($placeholders as $item) :
+                    ?>
+                    <blockquote class="testimonial-card">
+                        <p>“<?php echo esc_html($item['quote']); ?>”</p>
+                        <footer>
+                            <strong><?php echo esc_html($item['name']); ?></strong>
+                            <span><?php echo esc_html($item['role']); ?></span>
+                        </footer>
+                    </blockquote>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -143,12 +225,14 @@ $category_animations = array(
         <div class="container cta-band-inner reveal">
             <div>
                 <p class="eyebrow"><?php esc_html_e('Ready when you are', 'rolkat'); ?></p>
-                <h2><?php esc_html_e('Talk to ROLKAT today.', 'rolkat'); ?></h2>
-                <p><?php esc_html_e('Call, WhatsApp or send a message — we will respond promptly.', 'rolkat'); ?></p>
+                <h2><?php esc_html_e('Need cash fast? Talk to us today.', 'rolkat'); ?></h2>
+                <p><?php esc_html_e('WhatsApp or call — we will respond promptly.', 'rolkat'); ?></p>
             </div>
             <div class="hero-actions">
-                <a class="button" href="<?php echo esc_url(home_url('/contact/')); ?>"><?php esc_html_e('Contact us', 'rolkat'); ?></a>
-                <a class="button button--outline" href="<?php echo esc_url(rolkat_tel_href(rolkat_get_phone())); ?>"><?php echo esc_html(rolkat_get_phone()); ?></a>
+                <?php if ($whatsapp_url) : ?>
+                    <a class="button" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('WhatsApp', 'rolkat'); ?></a>
+                <?php endif; ?>
+                <a class="button button--outline" href="<?php echo esc_url(rolkat_tel_href($phone)); ?>"><?php esc_html_e('Call', 'rolkat'); ?> <?php echo esc_html($phone); ?></a>
             </div>
         </div>
     </section>

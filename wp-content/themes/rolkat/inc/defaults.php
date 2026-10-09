@@ -124,20 +124,54 @@ function rolkat_trust_points()
 {
     return array(
         array(
-            'title' => __('24-hour decisions', 'rolkat'),
-            'text' => __('Quick credit decisions without the delays of a traditional bank.', 'rolkat'),
+            'title' => __('Fast', 'rolkat'),
+            'text' => __('24-hour approval so you can keep your business moving.', 'rolkat'),
         ),
         array(
-            'title' => __('Transparent terms', 'rolkat'),
-            'text' => __('Clear pricing and respectful collection aligned with Ugandan microfinance rules.', 'rolkat'),
+            'title' => __('Fair & transparent', 'rolkat'),
+            'text' => __('Written total cost shown before you sign — no hidden surprises.', 'rolkat'),
         ),
         array(
-            'title' => __('Three services, one team', 'rolkat'),
-            'text' => __('Loans, property management and real estate under one trusted roof.', 'rolkat'),
+            'title' => __('Flexible', 'rolkat'),
+            'text' => __('Daily, weekly or flexible repayment that matches how you earn.', 'rolkat'),
         ),
         array(
-            'title' => __('Local and approachable', 'rolkat'),
-            'text' => __('Based on Entebbe Road in Zana, serving everyday Ugandans and small businesses.', 'rolkat'),
+            'title' => __('Respectful service', 'rolkat'),
+            'text' => __('Warm, local service for riders, vendors, landlords and home buyers.', 'rolkat'),
+        ),
+    );
+}
+
+function rolkat_audiences()
+{
+    return array(
+        __('Boda boda riders', 'rolkat'),
+        __('Market vendors', 'rolkat'),
+        __('Small retailers', 'rolkat'),
+        __('Groups', 'rolkat'),
+        __('Landlords', 'rolkat'),
+        __('Home buyers', 'rolkat'),
+    );
+}
+
+function rolkat_loan_steps()
+{
+    return array(
+        array(
+            'title' => __('Enquire', 'rolkat'),
+            'text' => __('Call, WhatsApp or visit us at Hanora Plaza.', 'rolkat'),
+        ),
+        array(
+            'title' => __('Apply', 'rolkat'),
+            'text' => __('Share a few details about what you need.', 'rolkat'),
+        ),
+        array(
+            'title' => __('Get approved in 24 hours', 'rolkat'),
+            'text' => __('Clear decision with written total cost before signing.', 'rolkat'),
+        ),
+        array(
+            'title' => __('Receive funds and repay your way', 'rolkat'),
+            'text' => __('Daily, weekly or flexible terms that fit your cash flow.', 'rolkat'),
         ),
     );
 }

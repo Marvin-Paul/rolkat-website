@@ -20,7 +20,7 @@ $home_url = home_url('/');
         <a class="brand" href="<?php echo esc_url($home_url); ?>" aria-label="<?php esc_attr_e('ROLKAT home', 'rolkat'); ?>">
             <span class="brand-mark" aria-hidden="true">R</span>
             <span>
-                <span class="brand-name">Rolkat Financial</span>
+                <span class="brand-name">ROLKAT</span>
                 <span class="brand-caption"><?php esc_html_e('Serving you better', 'rolkat'); ?></span>
             </span>
         </a>
@@ -37,8 +37,8 @@ $home_url = home_url('/');
                 'depth' => 1,
             ));
             ?>
-            <a class="button button--nav" href="<?php echo esc_url(home_url('/contact/')); ?>">
-                <?php esc_html_e('Contact us', 'rolkat'); ?>
+            <a class="button button--nav" href="<?php echo esc_url(home_url('/contact/?subject=Loans')); ?>">
+                <?php esc_html_e('Get a Quick Loan', 'rolkat'); ?>
             </a>
         </nav>
     </div>

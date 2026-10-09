@@ -14,7 +14,11 @@ $type = get_post_meta(get_the_ID(), '_rolkat_property_type', true);
     </a>
     <div class="property-card-body">
         <div class="property-card-tags">
-            <?php if ($status !== '') : ?><span class="property-card-status"><?php echo esc_html($status); ?></span><?php endif; ?>
+            <?php if ($status !== '') : ?>
+                <span class="property-card-status<?php echo $status === 'Sold' ? ' is-sold' : ($status === 'Rented' ? ' is-rented' : ''); ?>" data-status="<?php echo esc_attr($status); ?>">
+                    <?php echo esc_html($status); ?>
+                </span>
+            <?php endif; ?>
             <?php if ($type !== '') : ?><span class="property-card-type"><?php echo esc_html($type); ?></span><?php endif; ?>
         </div>
         <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>

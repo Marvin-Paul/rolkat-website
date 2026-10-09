@@ -1,4 +1,8 @@
 (() => {
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
+
   // Lightweight service illustrations. Motion starts only when the card is visible.
   const lottieContainers = document.querySelectorAll("[data-lottie-src]");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

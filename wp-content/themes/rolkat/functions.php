@@ -27,9 +27,8 @@ function rolkat_fallback_menu()
 {
     $links = array(
         __('Home', 'rolkat') => home_url('/'),
-        __('About us', 'rolkat') => home_url('/about/'),
+        __('About Us', 'rolkat') => home_url('/about/'),
         __('Services', 'rolkat') => get_post_type_archive_link('rolkat_service'),
-        __('Properties', 'rolkat') => get_post_type_archive_link('rolkat_property'),
         __('Team', 'rolkat') => get_post_type_archive_link('rolkat_team_member'),
         __('Contact', 'rolkat') => home_url('/contact/'),
     );
@@ -47,7 +46,20 @@ function rolkat_enqueue_assets()
 {
     $theme_version = wp_get_theme()->get('Version');
 
-    wp_enqueue_style('rolkat-style', get_stylesheet_uri(), array(), $theme_version);
+    wp_enqueue_style(
+        'rolkat-fonts',
+        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap',
+        array(),
+        null
+    );
+    wp_enqueue_style('rolkat-style', get_stylesheet_uri(), array('rolkat-fonts'), $theme_version);
+    wp_enqueue_script(
+        'rolkat-lucide',
+        get_template_directory_uri() . '/assets/js/lucide.min.js',
+        array(),
+        '1.54.0',
+        true
+    );
     wp_enqueue_script(
         'rolkat-lottie',
         get_template_directory_uri() . '/assets/js/lottie.min.js',
@@ -58,7 +70,7 @@ function rolkat_enqueue_assets()
     wp_enqueue_script(
         'rolkat-site',
         get_template_directory_uri() . '/assets/js/site.js',
-        array('rolkat-lottie'),
+        array('rolkat-lucide', 'rolkat-lottie'),
         $theme_version,
         true
     );

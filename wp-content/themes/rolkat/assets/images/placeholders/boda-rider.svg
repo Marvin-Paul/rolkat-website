@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-label="Boda boda rider illustration placeholder">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#122A4A"/>
+      <stop offset="100%" stop-color="#0B1F3A"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" rx="24" fill="url(#g1)"/>
+  <circle cx="460" cy="120" r="48" fill="#F04E23" opacity="0.35"/>
+  <rect x="80" y="280" width="220" height="28" rx="14" fill="#FAFAF7" opacity="0.18"/>
+  <rect x="80" y="320" width="160" height="18" rx="9" fill="#FAFAF7" opacity="0.12"/>
+  <text x="80" y="90" fill="#FAFAF7" font-family="system-ui,sans-serif" font-size="22" font-weight="700">Boda rider</text>
+  <text x="80" y="120" fill="#EEF2F7" font-family="system-ui,sans-serif" font-size="14">Authentic Ugandan context · placeholder</text>
+</svg>
