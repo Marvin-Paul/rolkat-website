@@ -3,13 +3,17 @@
     "siteName": "Rolkat Financial",
     "tagline": "Serving you better",
     "heroEyebrow": "Financial Services · Property Management · Real Estate",
-    "heroTitle": "A better way to move forward.",
-    "heroText": "Thoughtful financial solutions and property services, shaped around your goals and built on relationships you can trust.",
+    "heroTitle": "Serving you better.",
+    "heroText": "Fast, fair loans and professional property services for everyday Ugandans and small businesses — from Entebbe Road in Zana.",
     "phone": "+256 787 165 366",
     "email": "katongolejames122@gmail.com",
     "officeAddress": "Hanora Plaza, Zana, Entebbe Road, Opposite Be Energies",
-    "workingHours": "Monday – Friday: 8:00 AM – 5:30 PM, Saturday: 9:00 AM – 2:00 PM",
+    "workingHours": "Monday – Friday: 8:00 AM – 5:30 PM · Saturday: 9:00 AM – 2:00 PM",
     "whatsappNumber": "+256787165366",
+    "mapEmbedUrl": "https://www.google.com/maps?q=Hanora+Plaza+Zana+Entebbe+Road+Uganda&output=embed",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
     "calculatorDefaults": {
       "amount": 1000000,
       "rate": 18,
@@ -23,72 +27,84 @@
       "id": "srv-1",
       "number": "01",
       "title": "Micro Loans",
+      "category": "loans",
       "description": "Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval."
     },
     {
       "id": "srv-2",
       "number": "02",
       "title": "Small Business Loans",
+      "category": "loans",
       "description": "Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow."
     },
     {
       "id": "srv-3",
       "number": "03",
       "title": "Group Loans",
+      "category": "loans",
       "description": "Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections."
     },
     {
       "id": "srv-4",
       "number": "04",
       "title": "Emergency Loans",
+      "category": "loans",
       "description": "Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies."
     },
     {
       "id": "srv-5",
       "number": "05",
       "title": "Market Vendor Loans",
+      "category": "loans",
       "description": "Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening."
     },
     {
       "id": "srv-6",
       "number": "06",
       "title": "Tenant Sourcing & Screening",
+      "category": "property-management",
       "description": "Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022."
     },
     {
       "id": "srv-7",
       "number": "07",
       "title": "Rent Collection & Remittance",
+      "category": "property-management",
       "description": "Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners."
     },
     {
       "id": "srv-8",
       "number": "08",
       "title": "Property Maintenance & Repairs",
+      "category": "property-management",
       "description": "Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors."
     },
     {
       "id": "srv-9",
       "number": "09",
       "title": "Diaspora & Absentee Landlord Oversight",
+      "category": "property-management",
       "description": "Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad."
     },
     {
       "id": "srv-10",
       "number": "10",
       "title": "Land & Plot Sales",
+      "category": "real-estate",
       "description": "Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures."
     },
     {
       "id": "srv-11",
       "number": "11",
       "title": "Property Sales & Leasing",
+      "category": "real-estate",
       "description": "Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites."
     },
     {
       "id": "srv-12",
       "number": "12",
       "title": "Title Search & Due Diligence",
+      "category": "real-estate",
       "description": "Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud."
     }
   ],
@@ -99,6 +115,7 @@
       "location": "Kololo, Kampala",
       "price": "UGX 850,000,000",
       "status": "Available",
+      "type": "Sale",
       "description": "4-bedroom luxury home with spacious compound, modern kitchen, and perimeter security."
     },
     {
@@ -107,6 +124,7 @@
       "location": "Nakasero, Kampala",
       "price": "UGX 3,500,000 / mo",
       "status": "Available",
+      "type": "Rent",
       "description": "Centrally located commercial suite with 24/7 power backup, high-speed fibre, and reserved parking."
     },
     {
@@ -114,16 +132,27 @@
       "title": "Residential Land Opportunity",
       "location": "Kira Municipality, Wakiso",
       "price": "UGX 120,000,000",
-      "status": "Under offer",
+      "status": "Sold",
+      "type": "Land",
       "description": "50x100 ft ready-to-build residential plot with private mailo land title in an established neighbourhood."
     },
     {
-      "id": "prop-1791542012384",
+      "id": "prop-4",
       "title": "Waterfront Plot - Entebbe",
       "location": "Entebbe, Wakiso",
       "price": "UGX 250,000,000",
       "status": "Available",
+      "type": "Land",
       "description": "Prime lake view plot suitable for vacation villa or boutique hospitality."
+    },
+    {
+      "id": "prop-5",
+      "title": "Furnished Apartment - Zana",
+      "location": "Zana, Entebbe Road",
+      "price": "UGX 1,800,000 / mo",
+      "status": "Rented",
+      "type": "Rent",
+      "description": "2-bedroom furnished apartment near Hanora Plaza with reliable water and parking."
     }
   ],
   "team": [
@@ -153,18 +182,31 @@
       "name": "Grace Tumusiime",
       "email": "grace.t@example.com",
       "phone": "+256 772 123456",
-      "service": "Small Business Loans",
+      "subject": "Loans",
+      "service": "Loans",
       "message": "Inquiring about SME business expansion loan terms and eligibility criteria.",
       "status": "New"
     },
     {
-      "id": "sub-1791541979933",
+      "id": "sub-2",
       "date": "2026-10-09T10:32:59.933Z",
       "name": "Patrick Mukasa",
       "email": "patrick@example.com",
       "phone": "+256 782 999111",
-      "service": "Land & Plot Sales",
+      "subject": "Real estate",
+      "service": "Real estate",
       "message": "Looking for residential property in Entebbe.",
+      "status": "New"
+    },
+    {
+      "id": "sub-1791568613179",
+      "date": "2026-10-09T17:56:53.179Z",
+      "name": "Test User",
+      "email": "test@example.com",
+      "phone": "+256700",
+      "subject": "Loans",
+      "service": "Loans",
+      "message": "Full implementation check",
       "status": "New"
     }
   ]

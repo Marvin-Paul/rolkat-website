@@ -4,6 +4,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+require_once get_template_directory() . '/inc/defaults.php';
+
 function rolkat_setup()
 {
     load_theme_textdomain('rolkat', get_template_directory() . '/languages');
@@ -16,6 +18,7 @@ function rolkat_setup()
 
     register_nav_menus(array(
         'primary' => __('Primary navigation', 'rolkat'),
+        'footer' => __('Footer navigation', 'rolkat'),
     ));
 }
 add_action('after_setup_theme', 'rolkat_setup');
@@ -52,6 +55,10 @@ function rolkat_enqueue_assets()
         $theme_version,
         true
     );
+
+    wp_localize_script('rolkat-site', 'rolkatTheme', array(
+        'isWordPress' => true,
+    ));
 }
 add_action('wp_enqueue_scripts', 'rolkat_enqueue_assets');
 
@@ -70,7 +77,7 @@ function rolkat_register_content_types()
         'show_in_rest' => true,
         'menu_icon' => 'dashicons-chart-area',
         'rewrite' => array('slug' => 'services'),
-        'supports' => array('title', 'editor', 'excerpt', 'thumbnail'),
+        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
     ));
 
     register_post_type('rolkat_team_member', array(
@@ -104,76 +111,29 @@ function rolkat_register_content_types()
         'rewrite' => array('slug' => 'properties'),
         'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
     ));
+
+    register_post_type('rolkat_enquiry', array(
+        'labels' => array(
+            'name' => __('Enquiries', 'rolkat'),
+            'singular_name' => __('Enquiry', 'rolkat'),
+            'menu_name' => __('Enquiries', 'rolkat'),
+            'edit_item' => __('View enquiry', 'rolkat'),
+        ),
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'capability_type' => 'post',
+        'capabilities' => array(
+            'create_posts' => 'do_not_allow',
+        ),
+        'map_meta_cap' => true,
+        'menu_icon' => 'dashicons-email-alt',
+        'supports' => array('title'),
+    ));
 }
 add_action('init', 'rolkat_register_content_types');
 
-function rolkat_default_services()
-{
-    return array(
-        array(
-            'number' => '01',
-            'title' => __('Micro Loans', 'rolkat'),
-            'description' => __('Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval.', 'rolkat'),
-        ),
-        array(
-            'number' => '02',
-            'title' => __('Small Business Loans', 'rolkat'),
-            'description' => __('Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow.', 'rolkat'),
-        ),
-        array(
-            'number' => '03',
-            'title' => __('Group Loans', 'rolkat'),
-            'description' => __('Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections.', 'rolkat'),
-        ),
-        array(
-            'number' => '04',
-            'title' => __('Emergency Loans', 'rolkat'),
-            'description' => __('Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies.', 'rolkat'),
-        ),
-        array(
-            'number' => '05',
-            'title' => __('Market Vendor Loans', 'rolkat'),
-            'description' => __('Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening.', 'rolkat'),
-        ),
-        array(
-            'number' => '06',
-            'title' => __('Tenant Sourcing & Screening', 'rolkat'),
-            'description' => __('Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022.', 'rolkat'),
-        ),
-        array(
-            'number' => '07',
-            'title' => __('Rent Collection & Remittance', 'rolkat'),
-            'description' => __('Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners.', 'rolkat'),
-        ),
-        array(
-            'number' => '08',
-            'title' => __('Property Maintenance & Repairs', 'rolkat'),
-            'description' => __('Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors.', 'rolkat'),
-        ),
-        array(
-            'number' => '09',
-            'title' => __('Diaspora & Absentee Landlord Oversight', 'rolkat'),
-            'description' => __('Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad.', 'rolkat'),
-        ),
-        array(
-            'number' => '10',
-            'title' => __('Land & Plot Sales', 'rolkat'),
-            'description' => __('Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures.', 'rolkat'),
-        ),
-        array(
-            'number' => '11',
-            'title' => __('Property Sales & Leasing', 'rolkat'),
-            'description' => __('Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites.', 'rolkat'),
-        ),
-        array(
-            'number' => '12',
-            'title' => __('Title Search & Due Diligence', 'rolkat'),
-            'description' => __('Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud.', 'rolkat'),
-        ),
-    );
-}
-
-function rolkat_register_property_meta_box()
+function rolkat_register_meta_boxes()
 {
     add_meta_box(
         'rolkat-property-details',
@@ -183,8 +143,35 @@ function rolkat_register_property_meta_box()
         'normal',
         'high'
     );
+
+    add_meta_box(
+        'rolkat-service-details',
+        __('Service category', 'rolkat'),
+        'rolkat_render_service_meta_box',
+        'rolkat_service',
+        'side',
+        'default'
+    );
+
+    add_meta_box(
+        'rolkat-team-details',
+        __('Team details', 'rolkat'),
+        'rolkat_render_team_meta_box',
+        'rolkat_team_member',
+        'side',
+        'default'
+    );
+
+    add_meta_box(
+        'rolkat-enquiry-details',
+        __('Enquiry details', 'rolkat'),
+        'rolkat_render_enquiry_meta_box',
+        'rolkat_enquiry',
+        'normal',
+        'high'
+    );
 }
-add_action('add_meta_boxes_rolkat_property', 'rolkat_register_property_meta_box');
+add_action('add_meta_boxes', 'rolkat_register_meta_boxes');
 
 function rolkat_render_property_meta_box($post)
 {
@@ -192,6 +179,7 @@ function rolkat_render_property_meta_box($post)
     $location = get_post_meta($post->ID, '_rolkat_property_location', true);
     $price = get_post_meta($post->ID, '_rolkat_property_price', true);
     $status = get_post_meta($post->ID, '_rolkat_property_status', true);
+    $type = get_post_meta($post->ID, '_rolkat_property_type', true);
     ?>
     <p>
         <label for="rolkat-property-location"><?php esc_html_e('Location', 'rolkat'); ?></label><br>
@@ -204,19 +192,70 @@ function rolkat_render_property_meta_box($post)
     <p>
         <label for="rolkat-property-status"><?php esc_html_e('Listing status', 'rolkat'); ?></label><br>
         <select id="rolkat-property-status" name="rolkat_property_status">
-            <?php
-            $statuses = array(
-                '' => __('Select a status', 'rolkat'),
-                'Available' => __('Available', 'rolkat'),
-                'Under offer' => __('Under offer', 'rolkat'),
-                'No longer available' => __('No longer available', 'rolkat'),
-            );
-            foreach ($statuses as $value => $label) :
-                ?>
+            <option value=""><?php esc_html_e('Select a status', 'rolkat'); ?></option>
+            <?php foreach (rolkat_property_statuses() as $value => $label) : ?>
                 <option value="<?php echo esc_attr($value); ?>" <?php selected($status, $value); ?>><?php echo esc_html($label); ?></option>
             <?php endforeach; ?>
         </select>
     </p>
+    <p>
+        <label for="rolkat-property-type"><?php esc_html_e('Listing type', 'rolkat'); ?></label><br>
+        <select id="rolkat-property-type" name="rolkat_property_type">
+            <option value=""><?php esc_html_e('Select a type', 'rolkat'); ?></option>
+            <?php foreach (rolkat_property_types() as $value => $label) : ?>
+                <option value="<?php echo esc_attr($value); ?>" <?php selected($type, $value); ?>><?php echo esc_html($label); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </p>
+    <?php
+}
+
+function rolkat_render_service_meta_box($post)
+{
+    wp_nonce_field('rolkat_save_service_details', 'rolkat_service_details_nonce');
+    $category = get_post_meta($post->ID, '_rolkat_service_category', true);
+    ?>
+    <p>
+        <label for="rolkat-service-category"><?php esc_html_e('Business line', 'rolkat'); ?></label><br>
+        <select class="widefat" id="rolkat-service-category" name="rolkat_service_category">
+            <option value=""><?php esc_html_e('Select a category', 'rolkat'); ?></option>
+            <?php foreach (rolkat_service_categories() as $value => $meta) : ?>
+                <option value="<?php echo esc_attr($value); ?>" <?php selected($category, $value); ?>><?php echo esc_html($meta['label']); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </p>
+    <?php
+}
+
+function rolkat_render_team_meta_box($post)
+{
+    wp_nonce_field('rolkat_save_team_details', 'rolkat_team_details_nonce');
+    $role = get_post_meta($post->ID, '_rolkat_team_role', true);
+    ?>
+    <p>
+        <label for="rolkat-team-role"><?php esc_html_e('Job title', 'rolkat'); ?></label><br>
+        <input class="widefat" id="rolkat-team-role" name="rolkat_team_role" type="text" value="<?php echo esc_attr($role); ?>">
+    </p>
+    <?php
+}
+
+function rolkat_render_enquiry_meta_box($post)
+{
+    $fields = array(
+        'name' => get_post_meta($post->ID, '_rolkat_enquiry_name', true),
+        'email' => get_post_meta($post->ID, '_rolkat_enquiry_email', true),
+        'phone' => get_post_meta($post->ID, '_rolkat_enquiry_phone', true),
+        'subject' => get_post_meta($post->ID, '_rolkat_enquiry_subject', true),
+        'message' => get_post_meta($post->ID, '_rolkat_enquiry_message', true),
+    );
+    ?>
+    <table class="form-table">
+        <tr><th><?php esc_html_e('Name', 'rolkat'); ?></th><td><?php echo esc_html($fields['name']); ?></td></tr>
+        <tr><th><?php esc_html_e('Email', 'rolkat'); ?></th><td><a href="mailto:<?php echo esc_attr($fields['email']); ?>"><?php echo esc_html($fields['email']); ?></a></td></tr>
+        <tr><th><?php esc_html_e('Phone', 'rolkat'); ?></th><td><?php echo esc_html($fields['phone']); ?></td></tr>
+        <tr><th><?php esc_html_e('Subject', 'rolkat'); ?></th><td><?php echo esc_html($fields['subject']); ?></td></tr>
+        <tr><th><?php esc_html_e('Message', 'rolkat'); ?></th><td><?php echo nl2br(esc_html($fields['message'])); ?></td></tr>
+    </table>
     <?php
 }
 
@@ -232,20 +271,26 @@ function rolkat_save_property_details($post_id)
         return;
     }
 
-    $fields = array(
-        '_rolkat_property_location' => isset($_POST['rolkat_property_location'])
-            ? sanitize_text_field(wp_unslash($_POST['rolkat_property_location']))
-            : '',
-        '_rolkat_property_price' => isset($_POST['rolkat_property_price'])
-            ? sanitize_text_field(wp_unslash($_POST['rolkat_property_price']))
-            : '',
-    );
+    $location = isset($_POST['rolkat_property_location']) ? sanitize_text_field(wp_unslash($_POST['rolkat_property_location'])) : '';
+    $price = isset($_POST['rolkat_property_price']) ? sanitize_text_field(wp_unslash($_POST['rolkat_property_price'])) : '';
+    $status = isset($_POST['rolkat_property_status']) ? sanitize_text_field(wp_unslash($_POST['rolkat_property_status'])) : '';
+    $type = isset($_POST['rolkat_property_type']) ? sanitize_text_field(wp_unslash($_POST['rolkat_property_type'])) : '';
 
-    $status = isset($_POST['rolkat_property_status'])
-        ? sanitize_text_field(wp_unslash($_POST['rolkat_property_status']))
-        : '';
-    $allowed_statuses = array('', 'Available', 'Under offer', 'No longer available');
-    $fields['_rolkat_property_status'] = in_array($status, $allowed_statuses, true) ? $status : '';
+    $allowed_statuses = array_merge(array(''), array_keys(rolkat_property_statuses()));
+    $allowed_types = array_merge(array(''), array_keys(rolkat_property_types()));
+    if (!in_array($status, $allowed_statuses, true)) {
+        $status = '';
+    }
+    if (!in_array($type, $allowed_types, true)) {
+        $type = '';
+    }
+
+    $fields = array(
+        '_rolkat_property_location' => $location,
+        '_rolkat_property_price' => $price,
+        '_rolkat_property_status' => $status,
+        '_rolkat_property_type' => $type,
+    );
 
     foreach ($fields as $meta_key => $value) {
         if ($value === '') {
@@ -257,12 +302,116 @@ function rolkat_save_property_details($post_id)
 }
 add_action('save_post_rolkat_property', 'rolkat_save_property_details');
 
+function rolkat_save_service_details($post_id)
+{
+    if (
+        !isset($_POST['rolkat_service_details_nonce'])
+        || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['rolkat_service_details_nonce'])), 'rolkat_save_service_details')
+        || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        || wp_is_post_revision($post_id)
+        || !current_user_can('edit_post', $post_id)
+    ) {
+        return;
+    }
+
+    $category = isset($_POST['rolkat_service_category']) ? sanitize_text_field(wp_unslash($_POST['rolkat_service_category'])) : '';
+    if (!array_key_exists($category, rolkat_service_categories()) && $category !== '') {
+        $category = '';
+    }
+
+    if ($category === '') {
+        delete_post_meta($post_id, '_rolkat_service_category');
+    } else {
+        update_post_meta($post_id, '_rolkat_service_category', $category);
+    }
+}
+add_action('save_post_rolkat_service', 'rolkat_save_service_details');
+
+function rolkat_save_team_details($post_id)
+{
+    if (
+        !isset($_POST['rolkat_team_details_nonce'])
+        || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['rolkat_team_details_nonce'])), 'rolkat_save_team_details')
+        || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        || wp_is_post_revision($post_id)
+        || !current_user_can('edit_post', $post_id)
+    ) {
+        return;
+    }
+
+    $role = isset($_POST['rolkat_team_role']) ? sanitize_text_field(wp_unslash($_POST['rolkat_team_role'])) : '';
+    if ($role === '') {
+        delete_post_meta($post_id, '_rolkat_team_role');
+    } else {
+        update_post_meta($post_id, '_rolkat_team_role', $role);
+    }
+}
+add_action('save_post_rolkat_team_member', 'rolkat_save_team_details');
+
 function rolkat_flush_rewrite_rules()
 {
     rolkat_register_content_types();
     flush_rewrite_rules();
 }
 add_action('after_switch_theme', 'rolkat_flush_rewrite_rules');
+
+function rolkat_seed_pages()
+{
+    $pages = array(
+        'about' => array(
+            'title' => __('About Us', 'rolkat'),
+            'content' => '',
+            'template' => 'page-about.php',
+        ),
+        'contact' => array(
+            'title' => __('Contact', 'rolkat'),
+            'content' => '',
+            'template' => 'page-contact.php',
+        ),
+        'privacy-policy' => array(
+            'title' => __('Privacy Policy', 'rolkat'),
+            'content' => __('ROLKAT Financial Services SMC Ltd collects personal information submitted through this website (such as name, email, phone and message details) only to respond to enquiries and manage related services. We handle personal data in line with Uganda\'s Data Protection and Privacy Act, 2019. We do not sell your information. Contact us to request access, correction or deletion of your data.', 'rolkat'),
+            'template' => '',
+        ),
+    );
+
+    foreach ($pages as $slug => $page) {
+        $existing = get_page_by_path($slug);
+        if ($existing) {
+            continue;
+        }
+
+        $page_id = wp_insert_post(array(
+            'post_title' => $page['title'],
+            'post_name' => $slug,
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => $page['content'],
+        ));
+
+        if (!is_wp_error($page_id) && $page['template'] !== '') {
+            update_post_meta($page_id, '_wp_page_template', $page['template']);
+        }
+    }
+
+    $front = get_option('page_on_front');
+    if (!$front) {
+        $home = get_page_by_path('home');
+        if (!$home) {
+            $home_id = wp_insert_post(array(
+                'post_title' => __('Home', 'rolkat'),
+                'post_name' => 'home',
+                'post_status' => 'publish',
+                'post_type' => 'page',
+            ));
+            if (!is_wp_error($home_id)) {
+                update_option('show_on_front', 'page');
+                update_option('page_on_front', $home_id);
+            }
+        }
+    }
+}
+add_action('after_switch_theme', 'rolkat_seed_pages');
 
 function rolkat_customize_register($wp_customize)
 {
@@ -274,17 +423,21 @@ function rolkat_customize_register($wp_customize)
         'title' => __('ROLKAT contact details', 'rolkat'),
         'priority' => 200,
     ));
+    $wp_customize->add_section('rolkat_social', array(
+        'title' => __('ROLKAT social links', 'rolkat'),
+        'priority' => 201,
+    ));
 
     $homepage_settings = array(
         'rolkat_hero_title' => array(
             'label' => __('Homepage headline', 'rolkat'),
-            'default' => __('A better way to move forward.', 'rolkat'),
+            'default' => __('Serving you better.', 'rolkat'),
             'type' => 'text',
             'sanitize_callback' => 'sanitize_text_field',
         ),
         'rolkat_hero_text' => array(
             'label' => __('Homepage introduction', 'rolkat'),
-            'default' => __('Thoughtful financial solutions and property services, shaped around your goals and built on relationships you can trust.', 'rolkat'),
+            'default' => __('Fast, fair loans and professional property services for everyday Ugandans and small businesses — from Entebbe Road in Zana.', 'rolkat'),
             'type' => 'textarea',
             'sanitize_callback' => 'sanitize_textarea_field',
         ),
@@ -303,31 +456,74 @@ function rolkat_customize_register($wp_customize)
         ));
     }
 
-    $settings = array(
+    $contact_settings = array(
         'rolkat_phone' => array(
             'label' => __('Phone number', 'rolkat'),
+            'default' => rolkat_default_phone(),
+            'type' => 'text',
             'sanitize_callback' => 'sanitize_text_field',
         ),
         'rolkat_email' => array(
             'label' => __('Contact email', 'rolkat'),
+            'default' => rolkat_default_email(),
+            'type' => 'email',
             'sanitize_callback' => 'sanitize_email',
+        ),
+        'rolkat_whatsapp' => array(
+            'label' => __('WhatsApp number', 'rolkat'),
+            'default' => rolkat_default_whatsapp(),
+            'type' => 'text',
+            'sanitize_callback' => 'sanitize_text_field',
+        ),
+        'rolkat_hours' => array(
+            'label' => __('Working hours', 'rolkat'),
+            'default' => rolkat_default_hours(),
+            'type' => 'text',
+            'sanitize_callback' => 'sanitize_text_field',
         ),
         'rolkat_address' => array(
             'label' => __('Office address', 'rolkat'),
+            'default' => rolkat_default_address(),
+            'type' => 'textarea',
             'sanitize_callback' => 'sanitize_textarea_field',
+        ),
+        'rolkat_map_embed' => array(
+            'label' => __('Google Maps embed URL', 'rolkat'),
+            'default' => rolkat_default_map_embed(),
+            'type' => 'url',
+            'sanitize_callback' => 'esc_url_raw',
         ),
     );
 
-    foreach ($settings as $setting_name => $setting) {
+    foreach ($contact_settings as $setting_name => $setting) {
         $wp_customize->add_setting($setting_name, array(
-            'default' => '',
+            'default' => $setting['default'],
             'sanitize_callback' => $setting['sanitize_callback'],
             'transport' => 'refresh',
         ));
         $wp_customize->add_control($setting_name, array(
             'label' => $setting['label'],
             'section' => 'rolkat_contact',
-            'type' => $setting_name === 'rolkat_address' ? 'textarea' : 'text',
+            'type' => $setting['type'],
+        ));
+    }
+
+    $social_settings = array(
+        'rolkat_facebook' => __('Facebook URL', 'rolkat'),
+        'rolkat_instagram' => __('Instagram URL', 'rolkat'),
+        'rolkat_linkedin' => __('LinkedIn URL', 'rolkat'),
+    );
+
+    foreach ($social_settings as $setting_name => $label) {
+        $wp_customize->add_setting($setting_name, array(
+            'default' => '',
+            'sanitize_callback' => 'esc_url_raw',
+            'transport' => 'refresh',
+        ));
+        $wp_customize->add_control($setting_name, array(
+            'label' => $label,
+            'section' => 'rolkat_social',
+            'type' => 'url',
         ));
     }
 }
@@ -383,29 +579,207 @@ function rolkat_handle_contact_form()
 
     $name = isset($_POST['contact_name']) ? sanitize_text_field(wp_unslash($_POST['contact_name'])) : '';
     $email = isset($_POST['contact_email']) ? sanitize_email(wp_unslash($_POST['contact_email'])) : '';
-    $service = isset($_POST['contact_service']) ? sanitize_text_field(wp_unslash($_POST['contact_service'])) : '';
+    $phone = isset($_POST['contact_phone']) ? sanitize_text_field(wp_unslash($_POST['contact_phone'])) : '';
+    $subject = isset($_POST['contact_subject']) ? sanitize_text_field(wp_unslash($_POST['contact_subject'])) : '';
     $message = isset($_POST['contact_message']) ? sanitize_textarea_field(wp_unslash($_POST['contact_message'])) : '';
 
-    if ($name === '' || !is_email($email) || $message === '' || strlen($message) > 10000) {
+    if ($name === '' || !is_email($email) || $subject === '' || $message === '' || strlen($message) > 10000) {
         rolkat_contact_redirect('invalid');
     }
 
+    $enquiry_id = wp_insert_post(array(
+        'post_type' => 'rolkat_enquiry',
+        'post_status' => 'private',
+        'post_title' => sprintf('%s — %s', $name, $subject),
+    ));
+
+    if (!is_wp_error($enquiry_id)) {
+        update_post_meta($enquiry_id, '_rolkat_enquiry_name', $name);
+        update_post_meta($enquiry_id, '_rolkat_enquiry_email', $email);
+        update_post_meta($enquiry_id, '_rolkat_enquiry_phone', $phone);
+        update_post_meta($enquiry_id, '_rolkat_enquiry_subject', $subject);
+        update_post_meta($enquiry_id, '_rolkat_enquiry_message', $message);
+    }
+
     $recipient = sanitize_email(get_option('admin_email'));
+    $custom_email = sanitize_email(rolkat_get_email());
+    if (is_email($custom_email)) {
+        $recipient = $custom_email;
+    }
+
     if (!is_email($recipient)) {
         rolkat_contact_redirect('error');
     }
 
-    $subject = sprintf(__('Website enquiry from %s', 'rolkat'), $name);
+    $mail_subject = sprintf(__('Website enquiry: %s', 'rolkat'), $subject);
     $body = sprintf(
-        "Name: %s\nEmail: %s\nService: %s\n\n%s",
+        "Name: %s\nEmail: %s\nPhone: %s\nSubject: %s\n\n%s",
         $name,
         $email,
-        $service !== '' ? $service : __('Not specified', 'rolkat'),
+        $phone !== '' ? $phone : __('Not provided', 'rolkat'),
+        $subject,
         $message
     );
     $headers = array('Reply-To: ' . $email);
 
-    rolkat_contact_redirect(wp_mail($recipient, $subject, $body, $headers) ? 'sent' : 'error');
+    rolkat_contact_redirect(wp_mail($recipient, $mail_subject, $body, $headers) ? 'sent' : 'error');
 }
 add_action('admin_post_nopriv_rolkat_contact', 'rolkat_handle_contact_form');
 add_action('admin_post_rolkat_contact', 'rolkat_handle_contact_form');
+
+function rolkat_filter_property_query($query)
+{
+    if (is_admin() || !$query->is_main_query() || !is_post_type_archive('rolkat_property')) {
+        return;
+    }
+
+    $meta_query = array();
+
+    if (!empty($_GET['property_status'])) {
+        $status = sanitize_text_field(wp_unslash($_GET['property_status']));
+        if (array_key_exists($status, rolkat_property_statuses())) {
+            $meta_query[] = array(
+                'key' => '_rolkat_property_status',
+                'value' => $status,
+            );
+        }
+    }
+
+    if (!empty($_GET['property_type'])) {
+        $type = sanitize_text_field(wp_unslash($_GET['property_type']));
+        if (array_key_exists($type, rolkat_property_types())) {
+            $meta_query[] = array(
+                'key' => '_rolkat_property_type',
+                'value' => $type,
+            );
+        }
+    }
+
+    if ($meta_query) {
+        $query->set('meta_query', $meta_query);
+    }
+}
+add_action('pre_get_posts', 'rolkat_filter_property_query');
+
+function rolkat_enquiry_columns($columns)
+{
+    return array(
+        'cb' => $columns['cb'],
+        'title' => __('Enquiry', 'rolkat'),
+        'enquiry_email' => __('Email', 'rolkat'),
+        'enquiry_phone' => __('Phone', 'rolkat'),
+        'enquiry_subject' => __('Subject', 'rolkat'),
+        'date' => __('Date', 'rolkat'),
+    );
+}
+add_filter('manage_rolkat_enquiry_posts_columns', 'rolkat_enquiry_columns');
+
+function rolkat_enquiry_column_content($column, $post_id)
+{
+    if ($column === 'enquiry_email') {
+        echo esc_html(get_post_meta($post_id, '_rolkat_enquiry_email', true));
+    }
+    if ($column === 'enquiry_phone') {
+        echo esc_html(get_post_meta($post_id, '_rolkat_enquiry_phone', true));
+    }
+    if ($column === 'enquiry_subject') {
+        echo esc_html(get_post_meta($post_id, '_rolkat_enquiry_subject', true));
+    }
+}
+add_action('manage_rolkat_enquiry_posts_custom_column', 'rolkat_enquiry_column_content', 10, 2);
+
+function rolkat_export_enquiries_csv()
+{
+    if (!current_user_can('edit_posts') || !isset($_GET['rolkat_export_enquiries'])) {
+        return;
+    }
+
+    check_admin_referer('rolkat_export_enquiries');
+
+    $enquiries = get_posts(array(
+        'post_type' => 'rolkat_enquiry',
+        'post_status' => 'any',
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+    ));
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename=rolkat-enquiries.csv');
+
+    $out = fopen('php://output', 'w');
+    fputcsv($out, array('Date', 'Name', 'Email', 'Phone', 'Subject', 'Message'));
+
+    foreach ($enquiries as $enquiry) {
+        fputcsv($out, array(
+            get_the_date('c', $enquiry),
+            get_post_meta($enquiry->ID, '_rolkat_enquiry_name', true),
+            get_post_meta($enquiry->ID, '_rolkat_enquiry_email', true),
+            get_post_meta($enquiry->ID, '_rolkat_enquiry_phone', true),
+            get_post_meta($enquiry->ID, '_rolkat_enquiry_subject', true),
+            get_post_meta($enquiry->ID, '_rolkat_enquiry_message', true),
+        ));
+    }
+
+    fclose($out);
+    exit;
+}
+add_action('admin_init', 'rolkat_export_enquiries_csv');
+
+function rolkat_enquiry_admin_notice()
+{
+    $screen = get_current_screen();
+    if (!$screen || $screen->post_type !== 'rolkat_enquiry') {
+        return;
+    }
+
+    $url = wp_nonce_url(admin_url('edit.php?post_type=rolkat_enquiry&rolkat_export_enquiries=1'), 'rolkat_export_enquiries');
+    printf(
+        '<div class="notice notice-info"><p><a class="button button-secondary" href="%s">%s</a></p></div>',
+        esc_url($url),
+        esc_html__('Export enquiries to CSV', 'rolkat')
+    );
+}
+add_action('admin_notices', 'rolkat_enquiry_admin_notice');
+
+function rolkat_services_by_category()
+{
+    $grouped = array(
+        'loans' => array(),
+        'property-management' => array(),
+        'real-estate' => array(),
+    );
+
+    $query = new WP_Query(array(
+        'post_type' => 'rolkat_service',
+        'posts_per_page' => -1,
+        'orderby' => array('menu_order' => 'ASC', 'date' => 'DESC'),
+    ));
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $category = get_post_meta(get_the_ID(), '_rolkat_service_category', true);
+            if (!isset($grouped[$category])) {
+                $category = 'loans';
+            }
+            $grouped[$category][] = array(
+                'title' => get_the_title(),
+                'description' => has_excerpt() ? get_the_excerpt() : wp_trim_words(wp_strip_all_tags(get_the_content()), 28),
+                'permalink' => get_permalink(),
+            );
+        }
+        wp_reset_postdata();
+        return $grouped;
+    }
+
+    foreach (rolkat_default_services() as $service) {
+        $grouped[$service['category']][] = array(
+            'title' => $service['title'],
+            'description' => $service['description'],
+            'permalink' => home_url('/contact/'),
+        );
+    }
+
+    return $grouped;
+}

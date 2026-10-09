@@ -131,8 +131,8 @@ const server = createServer(async (request, response) => {
         sendJson(response, 200, { success: true, message: "Enquiry received." });
         return;
       }
-      if (!body.name || !body.email || !body.message) {
-        sendJson(response, 400, { error: "Please fill in all required fields (Name, Email, Message)." });
+      if (!body.name || !body.email || !body.subject || !body.message) {
+        sendJson(response, 400, { error: "Please fill in all required fields (Name, Email, Subject, Message)." });
         return;
       }
 
@@ -145,7 +145,8 @@ const server = createServer(async (request, response) => {
         name: String(body.name).trim(),
         email: String(body.email).trim(),
         phone: String(body.phone || "").trim(),
-        service: String(body.service || "").trim(),
+        subject: String(body.subject || "").trim(),
+        service: String(body.service || body.subject || "").trim(),
         message: String(body.message).trim(),
         status: "New",
       };

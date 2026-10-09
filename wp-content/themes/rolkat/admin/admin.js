@@ -154,6 +154,10 @@ function renderSettingsForm() {
   document.getElementById("setting-officeAddress").value = s.officeAddress || "";
   document.getElementById("setting-workingHours").value = s.workingHours || "";
   document.getElementById("setting-whatsappNumber").value = s.whatsappNumber || "";
+  document.getElementById("setting-mapEmbedUrl").value = s.mapEmbedUrl || "";
+  document.getElementById("setting-facebook").value = s.facebook || "";
+  document.getElementById("setting-instagram").value = s.instagram || "";
+  document.getElementById("setting-linkedin").value = s.linkedin || "";
   document.getElementById("setting-heroEyebrow").value = s.heroEyebrow || "";
   document.getElementById("setting-heroTitle").value = s.heroTitle || "";
   document.getElementById("setting-heroText").value = s.heroText || "";
@@ -178,6 +182,10 @@ async function handleSaveSettings(e) {
     officeAddress: document.getElementById("setting-officeAddress").value.trim(),
     workingHours: document.getElementById("setting-workingHours").value.trim(),
     whatsappNumber: document.getElementById("setting-whatsappNumber").value.trim(),
+    mapEmbedUrl: document.getElementById("setting-mapEmbedUrl").value.trim(),
+    facebook: document.getElementById("setting-facebook").value.trim(),
+    instagram: document.getElementById("setting-instagram").value.trim(),
+    linkedin: document.getElementById("setting-linkedin").value.trim(),
     heroEyebrow: document.getElementById("setting-heroEyebrow").value.trim(),
     heroTitle: document.getElementById("setting-heroTitle").value.trim(),
     heroText: document.getElementById("setting-heroText").value.trim(),
@@ -255,6 +263,7 @@ function openPropertyModal(id = null) {
       document.getElementById("prop-location").value = item.location;
       document.getElementById("prop-price").value = item.price;
       document.getElementById("prop-status").value = item.status;
+      document.getElementById("prop-type").value = item.type || "Sale";
       document.getElementById("prop-description").value = item.description || "";
     }
   } else {
@@ -272,6 +281,7 @@ async function handlePropertySubmit(e) {
     location: document.getElementById("prop-location").value.trim(),
     price: document.getElementById("prop-price").value.trim(),
     status: document.getElementById("prop-status").value,
+    type: document.getElementById("prop-type").value,
     description: document.getElementById("prop-description").value.trim(),
   };
 
@@ -517,7 +527,7 @@ function renderSubmissions() {
       <td><strong>${escapeHtml(sub.name)}</strong></td>
       <td><a href="mailto:${escapeHtml(sub.email)}" style="color:var(--admin-primary);">${escapeHtml(sub.email)}</a></td>
       <td>${escapeHtml(sub.phone || "—")}</td>
-      <td>${escapeHtml(sub.service || "—")}</td>
+      <td>${escapeHtml(sub.subject || sub.service || "—")}</td>
       <td><div style="max-width:240px;font-size:0.85rem;white-space:normal;">${escapeHtml(sub.message)}</div></td>
       <td>
         <span class="status-pill status-${sub.status === "New" ? "new" : "available"}">${escapeHtml(sub.status)}</span>
@@ -581,9 +591,9 @@ function exportSubmissionsCSV() {
     alert("No enquiries to export.");
     return;
   }
-  let csv = "ID,Date,Name,Email,Phone,Service,Status,Message\n";
+  let csv = "ID,Date,Name,Email,Phone,Subject,Service,Status,Message\n";
   list.forEach((s) => {
-    csv += `"${s.id}","${s.date}","${(s.name || "").replace(/"/g, '""')}","${(s.email || "").replace(/"/g, '""')}","${(s.phone || "").replace(/"/g, '""')}","${(s.service || "").replace(/"/g, '""')}","${(s.status || "").replace(/"/g, '""')}","${(s.message || "").replace(/"/g, '""')}"\n`;
+    csv += `"${s.id}","${s.date}","${(s.name || "").replace(/"/g, '""')}","${(s.email || "").replace(/"/g, '""')}","${(s.phone || "").replace(/"/g, '""')}","${(s.subject || s.service || "").replace(/"/g, '""')}","${(s.service || "").replace(/"/g, '""')}","${(s.status || "").replace(/"/g, '""')}","${(s.message || "").replace(/"/g, '""')}"\n`;
   });
 
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });

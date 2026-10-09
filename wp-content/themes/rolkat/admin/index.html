@@ -160,7 +160,7 @@
                   <tr>
                     <th>Client Name</th>
                     <th>Email Address</th>
-                    <th>Service Interest</th>
+                    <th>Subject</th>
                     <th>Status</th>
                     <th>Date</th>
                   </tr>
@@ -240,6 +240,22 @@
                 <div class="form-group full-width">
                   <label for="setting-officeAddress">Office Physical Address</label>
                   <textarea id="setting-officeAddress" rows="2" required></textarea>
+                </div>
+                <div class="form-group full-width">
+                  <label for="setting-mapEmbedUrl">Google Maps Embed URL</label>
+                  <input type="url" id="setting-mapEmbedUrl" placeholder="https://www.google.com/maps?q=...&output=embed">
+                </div>
+                <div class="form-group">
+                  <label for="setting-facebook">Facebook URL</label>
+                  <input type="url" id="setting-facebook" placeholder="https://facebook.com/...">
+                </div>
+                <div class="form-group">
+                  <label for="setting-instagram">Instagram URL</label>
+                  <input type="url" id="setting-instagram" placeholder="https://instagram.com/...">
+                </div>
+                <div class="form-group">
+                  <label for="setting-linkedin">LinkedIn URL</label>
+                  <input type="url" id="setting-linkedin" placeholder="https://linkedin.com/...">
                 </div>
               </div>
             </div>
@@ -400,7 +416,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Service</th>
+                    <th>Subject</th>
                     <th>Message</th>
                     <th>Status / Action</th>
                   </tr>
@@ -443,8 +459,16 @@
           <label for="prop-status">Listing Status</label>
           <select id="prop-status">
             <option value="Available">Available</option>
-            <option value="Under offer">Under offer</option>
-            <option value="Sold / Rented">Sold / Rented</option>
+            <option value="Sold">Sold</option>
+            <option value="Rented">Rented</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="prop-type">Listing Type</label>
+          <select id="prop-type">
+            <option value="Sale">For sale</option>
+            <option value="Rent">For rent</option>
+            <option value="Land">Land / plot</option>
           </select>
         </div>
         <div class="form-group">

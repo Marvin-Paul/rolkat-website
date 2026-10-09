@@ -93,8 +93,13 @@
       .replace(/'/g, "&#039;");
   }
 
-  // Load and Hydrate Content from Server
+  // Load and Hydrate Content from Server (preview mode only)
   async function loadSiteContent() {
+    if (window.rolkatTheme && window.rolkatTheme.isWordPress) {
+      initCalculator(null);
+      return;
+    }
+
     try {
       const res = await fetch("/api/content");
       if (!res.ok) return;
@@ -163,20 +168,40 @@
         servGrid.innerHTML = services.map(cardMarkup).join("\n");
       }
 
-      // Properties Grid
+      // Properties Grid with optional filters
       const properties = data.properties || [];
       const propGrid = document.getElementById("properties-grid");
-      if (propGrid && properties.length > 0) {
-        propGrid.innerHTML = properties
+      const statusFilter = document.getElementById("preview-property-status");
+      const typeFilter = document.getElementById("preview-property-type");
+
+      function renderProperties() {
+        if (!propGrid) return;
+        const statusValue = statusFilter ? statusFilter.value : "";
+        const typeValue = typeFilter ? typeFilter.value : "";
+        const filtered = properties.filter((prop) => {
+          const statusOk = !statusValue || prop.status === statusValue;
+          const typeOk = !typeValue || prop.type === typeValue;
+          return statusOk && typeOk;
+        });
+
+        if (filtered.length === 0) {
+          propGrid.innerHTML = `<p class="empty-state">No listings match these filters. Contact our team to discuss your requirements.</p>`;
+          return;
+        }
+
+        propGrid.innerHTML = filtered
           .map(
             (prop) => `
           <article class="property-card">
             <div class="property-card-placeholder" aria-hidden="true"></div>
             <div class="property-card-body">
-              <span class="property-card-status">${escape(prop.status || "Available")}</span>
+              <div class="property-card-tags">
+                <span class="property-card-status">${escape(prop.status || "Available")}</span>
+                ${prop.type ? `<span class="property-card-type">${escape(prop.type)}</span>` : ""}
+              </div>
               <h3>${escape(prop.title)}</h3>
               <div class="property-meta">
-                <span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="map-pin" style="width:14px;height:14px;"></i>${escape(prop.location || "Kampala")}</span> &middot; 
+                <span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="map-pin" style="width:14px;height:14px;"></i>${escape(prop.location || "Kampala")}</span> &middot;
                 <strong>${escape(prop.price || "Contact for price")}</strong>
               </div>
               <p style="margin-top:8px;">${escape(prop.description || "")}</p>
@@ -186,6 +211,43 @@
         `
           )
           .join("");
+
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+
+      renderProperties();
+      if (statusFilter) statusFilter.addEventListener("change", renderProperties);
+      if (typeFilter) typeFilter.addEventListener("change", renderProperties);
+
+      // Floating WhatsApp from settings
+      if (s.whatsappNumber) {
+        const float = document.getElementById("whatsapp-float");
+        if (float) {
+          float.href = `https://wa.me/${s.whatsappNumber.replace(/[^0-9]/g, "")}`;
+          float.style.display = "grid";
+        }
+      }
+
+      // Map embed
+      if (s.mapEmbedUrl) {
+        const mapFrame = document.getElementById("office-map");
+        const mapWrap = document.getElementById("office-map-wrap");
+        if (mapFrame && mapWrap) {
+          mapFrame.src = s.mapEmbedUrl;
+          mapWrap.style.display = "block";
+        }
+      }
+
+      // Social links
+      const socialWrap = document.getElementById("footer-social");
+      if (socialWrap) {
+        const links = [];
+        if (s.facebook) links.push(`<li><a href="${escape(s.facebook)}" target="_blank" rel="noopener noreferrer">Facebook</a></li>`);
+        if (s.instagram) links.push(`<li><a href="${escape(s.instagram)}" target="_blank" rel="noopener noreferrer">Instagram</a></li>`);
+        if (s.linkedin) links.push(`<li><a href="${escape(s.linkedin)}" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>`);
+        socialWrap.innerHTML = links.join("");
       }
 
       // Team Grid
@@ -233,7 +295,8 @@
         name: contactForm.elements.namedItem("name")?.value,
         email: contactForm.elements.namedItem("email")?.value,
         phone: contactForm.elements.namedItem("phone")?.value,
-        service: contactForm.elements.namedItem("service")?.value,
+        subject: contactForm.elements.namedItem("subject")?.value,
+        service: contactForm.elements.namedItem("subject")?.value || contactForm.elements.namedItem("service")?.value,
         message: contactForm.elements.namedItem("message")?.value,
         honeypot: contactForm.elements.namedItem("website")?.value,
       };

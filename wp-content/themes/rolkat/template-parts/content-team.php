@@ -1,15 +1,26 @@
+<?php
+$role = get_post_meta(get_the_ID(), '_rolkat_team_role', true);
+if ($role === '' && has_excerpt()) {
+    $role = get_the_excerpt();
+}
+?>
 <article <?php post_class('team-card'); ?>>
     <a href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr(sprintf(__('Read about %s', 'rolkat'), get_the_title())); ?>">
         <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('medium_large'); ?>
+            <?php the_post_thumbnail('medium_large', array('alt' => get_the_title())); ?>
         <?php else : ?>
             <div class="team-card-placeholder" aria-hidden="true"></div>
         <?php endif; ?>
     </a>
     <div class="team-card-body">
+        <?php if ($role !== '') : ?>
+            <span class="team-card-role"><?php echo esc_html($role); ?></span>
+        <?php endif; ?>
         <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-        <?php if (has_excerpt()) : ?>
+        <?php if (has_excerpt() && $role !== get_the_excerpt()) : ?>
             <p><?php echo esc_html(get_the_excerpt()); ?></p>
+        <?php elseif (get_the_content()) : ?>
+            <p><?php echo esc_html(wp_trim_words(wp_strip_all_tags(get_the_content()), 22)); ?></p>
         <?php endif; ?>
     </div>
 </article>
