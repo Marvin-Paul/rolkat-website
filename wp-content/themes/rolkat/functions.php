@@ -49,9 +49,16 @@ function rolkat_enqueue_assets()
 
     wp_enqueue_style('rolkat-style', get_stylesheet_uri(), array(), $theme_version);
     wp_enqueue_script(
+        'rolkat-lottie',
+        get_template_directory_uri() . '/assets/js/lottie.min.js',
+        array(),
+        '5.13.0',
+        true
+    );
+    wp_enqueue_script(
         'rolkat-site',
         get_template_directory_uri() . '/assets/js/site.js',
-        array(),
+        array('rolkat-lottie'),
         $theme_version,
         true
     );

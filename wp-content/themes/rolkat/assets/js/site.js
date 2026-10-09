@@ -1,4 +1,50 @@
 (() => {
+  // Lightweight service illustrations. Motion starts only when the card is visible.
+  const lottieContainers = document.querySelectorAll("[data-lottie-src]");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (window.lottie && lottieContainers.length) {
+    const animationByContainer = new Map();
+
+    lottieContainers.forEach((container) => {
+      const animation = window.lottie.loadAnimation({
+        container,
+        renderer: "svg",
+        loop: !prefersReducedMotion,
+        autoplay: false,
+        path: container.dataset.lottieSrc,
+        rendererSettings: {
+          progressiveLoad: true,
+          preserveAspectRatio: "xMidYMid meet",
+        },
+      });
+
+      animationByContainer.set(container, animation);
+
+      if (prefersReducedMotion) {
+        animation.addEventListener("DOMLoaded", () => animation.goToAndStop(45, true));
+      }
+    });
+
+    if (!prefersReducedMotion && "IntersectionObserver" in window) {
+      const animationObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const animation = animationByContainer.get(entry.target);
+            if (!animation) return;
+            if (entry.isIntersecting) animation.play();
+            else animation.pause();
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      lottieContainers.forEach((container) => animationObserver.observe(container));
+    } else if (!prefersReducedMotion) {
+      animationByContainer.forEach((animation) => animation.play());
+    }
+  }
+
   // Mobile Nav Toggle
   const toggle = document.querySelector(".nav-toggle");
   const navigation = document.querySelector("#primary-navigation");
@@ -11,7 +57,7 @@
     });
 
     navigation.addEventListener("click", (event) => {
-      if (event.target instanceof HTMLAnchorElement && window.matchMedia("(max-width: 860px)").matches) {
+      if (event.target instanceof HTMLAnchorElement && window.matchMedia("(max-width: 1100px)").matches) {
         toggle.setAttribute("aria-expanded", "false");
         navigation.classList.remove("is-open");
       }

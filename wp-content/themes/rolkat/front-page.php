@@ -24,6 +24,11 @@ $hero_text = get_theme_mod(
     __('Fast, fair loans and professional property services for everyday Ugandans and small businesses — from Entebbe Road in Zana.', 'rolkat')
 );
 $categories = rolkat_service_categories();
+$category_animations = array(
+    'loans' => 'finance-growth.json',
+    'property-management' => 'property-care.json',
+    'real-estate' => 'verified-location.json',
+);
 ?>
 <main id="main-content">
     <section class="hero">
@@ -51,6 +56,13 @@ $categories = rolkat_service_categories();
             <div class="pillar-grid reveal reveal-delay-1">
                 <?php foreach ($categories as $slug => $category) : ?>
                     <article class="pillar-card">
+                        <?php if (isset($category_animations[$slug])) : ?>
+                            <div
+                                class="lottie-visual"
+                                data-lottie-src="<?php echo esc_url(get_template_directory_uri() . '/assets/lottie/' . $category_animations[$slug]); ?>"
+                                aria-hidden="true"
+                            ></div>
+                        <?php endif; ?>
                         <h3><?php echo esc_html($category['label']); ?></h3>
                         <p><?php echo esc_html($category['summary']); ?></p>
                         <p class="pillar-audience"><strong><?php esc_html_e('For:', 'rolkat'); ?></strong> <?php echo esc_html($category['audience']); ?></p>
