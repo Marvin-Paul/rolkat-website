@@ -25,16 +25,122 @@
             <span class="screen-reader-text">Toggle navigation</span>
         </button>
         <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#properties">Properties</a></li>
-                <li><a href="#about">About us</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="/admin" target="_blank" style="color:var(--copper);font-weight:600;display:inline-flex;align-items:center;gap:4px;"><i data-lucide="settings" style="width:14px;height:14px;"></i>Admin</a></li>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                
+                <!-- Services Categorized Dropdown -->
+                <li class="nav-item-dropdown">
+                    <a href="#services" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
+                        Services <i data-lucide="chevron-down" class="nav-chevron"></i>
+                    </a>
+                    <div class="nav-dropdown nav-dropdown--wide" role="menu">
+                        <div class="nav-dropdown-grid">
+                            <div class="nav-dropdown-col">
+                                <span class="nav-dropdown-heading"><i data-lucide="banknote" style="width:13px;height:13px;"></i> Loans & Credit</span>
+                                <a href="#services" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="coins"></i></div>
+                                    <div>
+                                        <strong>Micro & Business Loans</strong>
+                                        <span>Daily, weekly & capital finance</span>
+                                    </div>
+                                </a>
+                                <a href="#services" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="users"></i></div>
+                                    <div>
+                                        <strong>Group & Emergency Credit</strong>
+                                        <span>Solidarity lending & 24hr emergency</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="nav-dropdown-col">
+                                <span class="nav-dropdown-heading"><i data-lucide="trending-up" style="width:13px;height:13px;"></i> Borrowing Tools</span>
+                                <a href="#loan-process" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="git-commit"></i></div>
+                                    <div>
+                                        <strong>The Loan Journey</strong>
+                                        <span>6 clear steps to disbursement</span>
+                                    </div>
+                                </a>
+                                <a href="#loan-calculator" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="calculator"></i></div>
+                                    <div>
+                                        <strong>Loan Calculator</strong>
+                                        <span>Estimate your monthly repayment</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="nav-dropdown-col">
+                                <span class="nav-dropdown-heading"><i data-lucide="building" style="width:13px;height:13px;"></i> Property & Land</span>
+                                <a href="#services" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="home"></i></div>
+                                    <div>
+                                        <strong>Property Management</strong>
+                                        <span>Tenant sourcing, rent & upkeep</span>
+                                    </div>
+                                </a>
+                                <a href="#services" class="nav-dropdown-item" role="menuitem">
+                                    <div class="nav-dropdown-icon"><i data-lucide="map"></i></div>
+                                    <div>
+                                        <strong>Land & Title Search</strong>
+                                        <span>Plot acquisitions & due diligence</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Properties Link with Badge -->
+                <li>
+                    <a href="#properties" class="nav-link">
+                        Properties
+                        <span class="nav-pill-badge">Listings</span>
+                    </a>
+                </li>
+
+                <!-- About / Company Dropdown -->
+                <li class="nav-item-dropdown">
+                    <a href="#about" class="nav-link nav-link-dropdown" aria-haspopup="true" aria-expanded="false">
+                        Company <i data-lucide="chevron-down" class="nav-chevron"></i>
+                    </a>
+                    <div class="nav-dropdown" role="menu">
+                        <a href="#about" class="nav-dropdown-item" role="menuitem">
+                            <div class="nav-dropdown-icon"><i data-lucide="info"></i></div>
+                            <div>
+                                <strong>About ROLKAT</strong>
+                                <span>Our mission, vision and values</span>
+                            </div>
+                        </a>
+                        <a href="#team" class="nav-dropdown-item" role="menuitem">
+                            <div class="nav-dropdown-icon"><i data-lucide="award"></i></div>
+                            <div>
+                                <strong>Our Leadership Team</strong>
+                                <span>Meet our consultants & directors</span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
-            <a class="button button--nav" href="#contact">Talk to our team</a>
+
+            <!-- Header Action Utilities -->
+            <div class="header-actions">
+                <a href="tel:+256787165366" class="header-phone-link" aria-label="Call ROLKAT at +256 787 165 366">
+                    <i data-lucide="phone" style="width:14px;height:14px;"></i>
+                    <span id="nav-phone">+256 787 165 366</span>
+                </a>
+                <a href="/admin" target="_blank" class="header-admin-pill" title="Staff & Management Portal">
+                    <i data-lucide="lock" style="width:12px;height:12px;"></i>
+                    <span>Admin</span>
+                </a>
+                <a class="button button--nav" href="#contact">
+                    <i data-lucide="message-square" style="width:14px;height:14px;"></i>
+                    <span>Talk to our team</span>
+                </a>
+            </div>
         </nav>
     </div>
 </header>
@@ -54,46 +160,187 @@
 
     <section class="section" id="services">
         <div class="container">
-            <div class="section-heading">
+            <div class="section-heading reveal">
                 <div>
                     <p class="eyebrow">What we do</p>
                     <h2>Comprehensive financial, property and real estate solutions.</h2>
                 </div>
-                <p>From fast and flexible credit with 24-hour approval to dedicated property care and safe land acquisitions, explore all our services below.</p>
+                <div class="services-heading-side">
+                    <p>From fast and flexible credit with 24-hour approval to dedicated property care and safe land acquisitions, explore all our services below.</p>
+                    <div class="marquee-controls" aria-label="Services carousel controls">
+                        <span class="marquee-hint"><i data-lucide="info" style="width:13px;height:13px;"></i> Hover to pause</span>
+                        <button type="button" class="marquee-btn" id="marquee-toggle-btn" aria-label="Pause moving cards" title="Pause / Play animation">
+                            <i data-lucide="pause" id="marquee-toggle-icon" style="width:14px;height:14px;"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="card-grid" id="services-grid">
-                <article class="service-card">
-                    <span class="service-card-number">01</span>
-                    <h3>Loans</h3>
-                    <p>Explore financing options designed around your needs, plans and circumstances.</p>
-                    <a class="text-link" href="#contact">Learn more</a>
-                </article>
-                <article class="service-card">
-                    <span class="service-card-number">02</span>
-                    <h3>Property management</h3>
-                    <p>Reliable support to help property owners care for and manage their investments.</p>
-                    <a class="text-link" href="#contact">Learn more</a>
-                </article>
-                <article class="service-card">
-                    <span class="service-card-number">03</span>
-                    <h3>Real estate</h3>
-                    <p>Personal guidance for property decisions, from exploring opportunities to taking the next step.</p>
-                    <a class="text-link" href="#contact">Learn more</a>
-                </article>
+        </div>
+
+        <div class="services-marquee-wrapper" id="services-marquee" role="region" aria-label="Continuous Services Carousel">
+            <div class="services-marquee-track" id="services-track">
+                <div class="services-marquee-group" id="services-group-1">
+                    <article class="service-card">
+                        <span class="service-card-number">01</span>
+                        <h3>Micro Loans</h3>
+                        <p>Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">02</span>
+                        <h3>Small Business Loans</h3>
+                        <p>Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">03</span>
+                        <h3>Group Loans</h3>
+                        <p>Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">04</span>
+                        <h3>Emergency Loans</h3>
+                        <p>Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">05</span>
+                        <h3>Market Vendor Loans</h3>
+                        <p>Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">06</span>
+                        <h3>Tenant Sourcing &amp; Screening</h3>
+                        <p>Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">07</span>
+                        <h3>Rent Collection &amp; Remittance</h3>
+                        <p>Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">08</span>
+                        <h3>Property Maintenance &amp; Repairs</h3>
+                        <p>Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">09</span>
+                        <h3>Diaspora &amp; Absentee Landlord Oversight</h3>
+                        <p>Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">10</span>
+                        <h3>Land &amp; Plot Sales</h3>
+                        <p>Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">11</span>
+                        <h3>Property Sales &amp; Leasing</h3>
+                        <p>Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">12</span>
+                        <h3>Title Search &amp; Due Diligence</h3>
+                        <p>Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                </div>
+                <div class="services-marquee-group" id="services-group-2" aria-hidden="true">
+                    <article class="service-card">
+                        <span class="service-card-number">01</span>
+                        <h3>Micro Loans</h3>
+                        <p>Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">02</span>
+                        <h3>Small Business Loans</h3>
+                        <p>Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">03</span>
+                        <h3>Group Loans</h3>
+                        <p>Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">04</span>
+                        <h3>Emergency Loans</h3>
+                        <p>Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">05</span>
+                        <h3>Market Vendor Loans</h3>
+                        <p>Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">06</span>
+                        <h3>Tenant Sourcing &amp; Screening</h3>
+                        <p>Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">07</span>
+                        <h3>Rent Collection &amp; Remittance</h3>
+                        <p>Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">08</span>
+                        <h3>Property Maintenance &amp; Repairs</h3>
+                        <p>Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">09</span>
+                        <h3>Diaspora &amp; Absentee Landlord Oversight</h3>
+                        <p>Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">10</span>
+                        <h3>Land &amp; Plot Sales</h3>
+                        <p>Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">11</span>
+                        <h3>Property Sales &amp; Leasing</h3>
+                        <p>Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                    <article class="service-card">
+                        <span class="service-card-number">12</span>
+                        <h3>Title Search &amp; Due Diligence</h3>
+                        <p>Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud.</p>
+                        <a class="text-link" href="#contact">Learn more</a>
+                    </article>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="section section--sand" id="properties">
         <div class="container">
-            <div class="section-heading">
+            <div class="section-heading reveal">
                 <div>
                     <p class="eyebrow">Property opportunities</p>
                     <h2>Find a place for what comes next.</h2>
                 </div>
                 <p>Explore current listings and get in touch with our team to learn more.</p>
             </div>
-            <div class="card-grid" id="properties-grid">
+            <div class="card-grid reveal reveal-delay-1" id="properties-grid">
                 <!-- Dynamically loaded from Admin API -->
             </div>
         </div>
@@ -101,14 +348,14 @@
 
     <section class="section" id="about">
         <div class="container split">
-            <div class="split-panel">
+            <div class="split-panel reveal">
                 <div class="split-panel-inner">
                     <p class="eyebrow">Rolkat Financial Services SMC Ltd</p>
                     <h3>Serving you better is more than a promise.</h3>
                     <p>It is the care we bring to every conversation, decision and relationship.</p>
                 </div>
             </div>
-            <div class="split-copy">
+            <div class="split-copy reveal reveal-delay-2">
                 <p class="eyebrow">A little about us</p>
                 <h2>Good decisions start with a good conversation.</h2>
                 <p>ROLKAT brings financial services, property management and real estate together under one roof. We take time to understand what matters to you, then help you find a practical way forward.</p>
@@ -124,21 +371,21 @@
 
     <section class="section section--sand" id="team">
         <div class="container">
-            <div class="section-heading">
+            <div class="section-heading reveal">
                 <div>
                     <p class="eyebrow">Our People</p>
                     <h2>Leadership built on integrity and service.</h2>
                 </div>
                 <p>Meet the dedicated team working to guide your financial and property decisions.</p>
             </div>
-            <div class="card-grid" id="team-grid">
+            <div class="card-grid reveal reveal-delay-1" id="team-grid">
                 <!-- Dynamically loaded from Admin API -->
             </div>
         </div>
     </section>
 
     <section class="section" id="loan-calculator">
-        <div class="container calculator">
+        <div class="container calculator reveal">
             <div>
                 <p class="eyebrow">Plan with confidence</p>
                 <h2>A clearer picture of your loan.</h2>
@@ -166,8 +413,95 @@
         </div>
     </section>
 
+    <section class="section" id="loan-process">
+        <div class="container">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="eyebrow">The Loan Journey</p>
+                    <h2>Clear, fast steps from application to disbursement.</h2>
+                </div>
+                <p>Designed for market vendors, boda boda cyclists, retailers, and small businesses. Enjoy respectful service, transparent terms, and our 24-hour decision promise.</p>
+            </div>
+
+            <div class="process-grid reveal reveal-delay-1">
+                <article class="process-card">
+                    <span class="process-step-badge">1</span>
+                    <h3>Enquiry & Consultation</h3>
+                    <p>Contact us via phone or WhatsApp (+256 787 165 366), or visit our branch at Hanora Plaza, Zana. We explain available loan options clearly on the same day.</p>
+                    <span class="process-detail-tag"><i data-lucide="message-square" style="width:13px;height:13px;"></i> Same-day response</span>
+                </article>
+
+                <article class="process-card">
+                    <span class="process-step-badge">2</span>
+                    <h3>Simple Application</h3>
+                    <p>State your loan purpose, requested amount, and preferred daily or weekly repayment plan using a simple, straightforward application form in English or Luganda.</p>
+                    <span class="process-detail-tag"><i data-lucide="file-text" style="width:13px;height:13px;"></i> No complex paperwork</span>
+                </article>
+
+                <article class="process-card">
+                    <span class="process-step-badge">3</span>
+                    <h3>KYC & Workplace Visit</h3>
+                    <p>Provide a copy of your National ID, passport photo, and a local referee or stage/group leader reference. Our loan officer conducts a quick, respectful workplace visit.</p>
+                    <span class="process-detail-tag"><i data-lucide="user-check" style="width:13px;height:13px;"></i> Verified & respectful</span>
+                </article>
+
+                <article class="process-card">
+                    <span class="process-step-badge">4</span>
+                    <h3>24-Hour Approval Decision</h3>
+                    <p>Our credit team reviews your actual business cash flow and provides an approval decision within 24 hours with transparent terms and legal UMRA rate compliance.</p>
+                    <span class="process-detail-tag"><i data-lucide="clock" style="width:13px;height:13px;"></i> 24-Hour promise</span>
+                </article>
+
+                <article class="process-card">
+                    <span class="process-step-badge">5</span>
+                    <h3>Immediate Disbursement</h3>
+                    <p>Sign your clear loan agreement showing total costs and repayment dates. Funds are released promptly via Mobile Money (MTN / Airtel), bank transfer, or cash.</p>
+                    <span class="process-detail-tag"><i data-lucide="wallet" style="width:13px;height:13px;"></i> Mobile Money or Bank</span>
+                </article>
+
+                <article class="process-card">
+                    <span class="process-step-badge">6</span>
+                    <h3>Flexible Repayments & Growth</h3>
+                    <p>Make small daily or weekly repayments matching your earning cycle with instant receipts. Punctual borrowers earn higher loan limits and rapid loan renewals.</p>
+                    <span class="process-detail-tag"><i data-lucide="trending-up" style="width:13px;height:13px;"></i> Daily & weekly options</span>
+                </article>
+            </div>
+
+            <div class="loan-highlights reveal reveal-delay-2">
+                <div class="highlight-item">
+                    <i data-lucide="shield-check" class="highlight-icon" style="width:22px;height:22px;"></i>
+                    <div class="highlight-text">
+                        <strong>UMRA Regulated</strong>
+                        <span>Transparent pricing compliant with Ugandan Tier 4 microfinance regulations.</span>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <i data-lucide="zap" class="highlight-icon" style="width:22px;height:22px;"></i>
+                    <div class="highlight-text">
+                        <strong>24-Hour Decision</strong>
+                        <span>Quick credit access without the long waiting times and heavy demands of commercial banks.</span>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <i data-lucide="calendar" class="highlight-icon" style="width:22px;height:22px;"></i>
+                    <div class="highlight-text">
+                        <strong>Tailored Repayment</strong>
+                        <span>Daily collection options for market vendors and weekly schedules for retail shops.</span>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <i data-lucide="award" class="highlight-icon" style="width:22px;height:22px;"></i>
+                    <div class="highlight-text">
+                        <strong>Loyalty Growth</strong>
+                        <span>Consistent repayment records unlock higher amounts and dedicated business credit.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section section--sand" id="contact">
-        <div class="container contact-layout">
+        <div class="container contact-layout reveal">
             <div>
                 <p class="eyebrow">We are ready to listen</p>
                 <h2>Let's talk about your next step.</h2>
@@ -264,6 +598,7 @@
                 <ul class="footer-links">
                     <li><a href="#about">About us</a></li>
                     <li><a href="#services">Services</a></li>
+                    <li><a href="#loan-process">Loan Process</a></li>
                     <li><a href="#properties">Properties</a></li>
                     <li><a href="#team">Our Team</a></li>
                     <li><a href="#contact">Contact</a></li>
@@ -283,5 +618,9 @@
         </div>
     </div>
 </footer>
+
+<button type="button" class="back-to-top" id="back-to-top" aria-label="Back to top" title="Back to top">
+    <i data-lucide="arrow-up" style="width:18px;height:18px;"></i>
+</button>
 </body>
 </html>

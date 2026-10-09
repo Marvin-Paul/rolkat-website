@@ -54,6 +54,9 @@ $address = get_theme_mod('rolkat_address', '');
         </div>
     </div>
 </footer>
+<button type="button" class="back-to-top" id="back-to-top" aria-label="<?php esc_attr_e('Back to top', 'rolkat'); ?>" title="<?php esc_attr_e('Back to top', 'rolkat'); ?>">
+    <i data-lucide="arrow-up" style="width:18px;height:18px;"></i>
+</button>
 <?php wp_footer(); ?>
 </body>
 </html>

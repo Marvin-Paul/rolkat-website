@@ -112,18 +112,63 @@ function rolkat_default_services()
     return array(
         array(
             'number' => '01',
-            'title' => __('Loans', 'rolkat'),
-            'description' => __('Explore financing options designed around your needs, plans and circumstances.', 'rolkat'),
+            'title' => __('Micro Loans', 'rolkat'),
+            'description' => __('Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval.', 'rolkat'),
         ),
         array(
             'number' => '02',
-            'title' => __('Property management', 'rolkat'),
-            'description' => __('Reliable support to help property owners care for and manage their investments.', 'rolkat'),
+            'title' => __('Small Business Loans', 'rolkat'),
+            'description' => __('Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow.', 'rolkat'),
         ),
         array(
             'number' => '03',
-            'title' => __('Real estate', 'rolkat'),
-            'description' => __('Personal guidance for property decisions, from exploring opportunities to taking the next step.', 'rolkat'),
+            'title' => __('Group Loans', 'rolkat'),
+            'description' => __('Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections.', 'rolkat'),
+        ),
+        array(
+            'number' => '04',
+            'title' => __('Emergency Loans', 'rolkat'),
+            'description' => __('Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies.', 'rolkat'),
+        ),
+        array(
+            'number' => '05',
+            'title' => __('Market Vendor Loans', 'rolkat'),
+            'description' => __('Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening.', 'rolkat'),
+        ),
+        array(
+            'number' => '06',
+            'title' => __('Tenant Sourcing & Screening', 'rolkat'),
+            'description' => __('Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022.', 'rolkat'),
+        ),
+        array(
+            'number' => '07',
+            'title' => __('Rent Collection & Remittance', 'rolkat'),
+            'description' => __('Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners.', 'rolkat'),
+        ),
+        array(
+            'number' => '08',
+            'title' => __('Property Maintenance & Repairs', 'rolkat'),
+            'description' => __('Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors.', 'rolkat'),
+        ),
+        array(
+            'number' => '09',
+            'title' => __('Diaspora & Absentee Landlord Oversight', 'rolkat'),
+            'description' => __('Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad.', 'rolkat'),
+        ),
+        array(
+            'number' => '10',
+            'title' => __('Land & Plot Sales', 'rolkat'),
+            'description' => __('Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures.', 'rolkat'),
+        ),
+        array(
+            'number' => '11',
+            'title' => __('Property Sales & Leasing', 'rolkat'),
+            'description' => __('Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites.', 'rolkat'),
+        ),
+        array(
+            'number' => '12',
+            'title' => __('Title Search & Due Diligence', 'rolkat'),
+            'description' => __('Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud.', 'rolkat'),
         ),
     );
 }

@@ -72,6 +72,9 @@
             : (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
 
         result.textContent = currency.format(repayment);
+        result.classList.remove("is-updating");
+        void result.offsetWidth;
+        result.classList.add("is-updating");
       };
 
       calculator.addEventListener("input", updateEstimate);
@@ -135,22 +138,29 @@
         document.getElementById("site-whatsapp-container").style.display = "block";
       }
 
-      // Services Grid
+      // Services Marquee & Grid Hydration
       const services = data.services || [];
+      const group1 = document.getElementById("services-group-1");
+      const group2 = document.getElementById("services-group-2");
       const servGrid = document.getElementById("services-grid");
-      if (servGrid && services.length > 0) {
-        servGrid.innerHTML = services
-          .map(
-            (srv) => `
+
+      const cardMarkup = (srv) => `
           <article class="service-card">
             <span class="service-card-number">${escape(srv.number || "01")}</span>
             <h3>${escape(srv.title)}</h3>
             <p>${escape(srv.description)}</p>
             <a class="text-link" href="#contact">Learn more</a>
           </article>
-        `
-          )
-          .join("");
+      `;
+
+      if (group1 && services.length > 0) {
+        const html = services.map(cardMarkup).join("\n");
+        group1.innerHTML = html;
+        if (group2) {
+          group2.innerHTML = html;
+        }
+      } else if (servGrid && services.length > 0) {
+        servGrid.innerHTML = services.map(cardMarkup).join("\n");
       }
 
       // Properties Grid
@@ -262,6 +272,89 @@
     });
   }
 
+  // Services Marquee Controls
+  const marqueeTrack = document.getElementById("services-track");
+  const marqueeToggleBtn = document.getElementById("marquee-toggle-btn");
+
+  if (marqueeTrack && marqueeToggleBtn) {
+    marqueeToggleBtn.addEventListener("click", () => {
+      const isPaused = marqueeTrack.classList.toggle("is-paused");
+      marqueeToggleBtn.setAttribute(
+        "aria-label",
+        isPaused ? "Play moving cards" : "Pause moving cards"
+      );
+      marqueeToggleBtn.setAttribute(
+        "title",
+        isPaused ? "Play animation" : "Pause animation"
+      );
+      marqueeToggleBtn.innerHTML = isPaused
+        ? '<i data-lucide="play" style="width:14px;height:14px;"></i>'
+        : '<i data-lucide="pause" style="width:14px;height:14px;"></i>';
+      if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+      }
+    });
+  }
+
+  // Sticky Header & Back-to-Top Scroll Triggers
+  const header = document.querySelector(".site-header");
+  const backToTopBtn = document.getElementById("back-to-top");
+
+  function handleScroll() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    if (header) {
+      if (scrollY > 30) {
+        header.classList.add("is-scrolled");
+      } else {
+        header.classList.remove("is-scrolled");
+      }
+    }
+    if (backToTopBtn) {
+      if (scrollY > 350) {
+        backToTopBtn.classList.add("is-visible");
+      } else {
+        backToTopBtn.classList.remove("is-visible");
+      }
+    }
+  }
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  // IntersectionObserver for Scroll Reveals
+  function initScrollReveals() {
+    const reveals = document.querySelectorAll(".reveal:not(.is-revealed)");
+    if (!reveals.length) return;
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -40px 0px", threshold: 0.1 }
+      );
+
+      reveals.forEach((el) => observer.observe(el));
+    } else {
+      reveals.forEach((el) => el.classList.add("is-revealed"));
+    }
+  }
+
+  initScrollReveals();
+
   // Run on load
-  loadSiteContent();
+  loadSiteContent().then(() => {
+    initScrollReveals();
+  });
 })();

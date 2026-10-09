@@ -27,40 +27,68 @@ $hero_text = get_theme_mod('rolkat_hero_text', __('Thoughtful financial solution
         </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="services">
         <div class="container">
             <div class="section-heading">
                 <div>
                     <p class="eyebrow"><?php esc_html_e('What we do', 'rolkat'); ?></p>
-                    <h2><?php esc_html_e('One partner. Three ways to help you grow.', 'rolkat'); ?></h2>
+                    <h2><?php esc_html_e('Comprehensive financial, property and real estate solutions.', 'rolkat'); ?></h2>
                 </div>
-                <p><?php esc_html_e('From finding the right financing to caring for property and navigating real estate, we bring practical support to every next step.', 'rolkat'); ?></p>
+                <div class="services-heading-side">
+                    <p><?php esc_html_e('From fast and flexible credit with 24-hour approval to dedicated property care and safe land acquisitions, explore all our services below.', 'rolkat'); ?></p>
+                    <div class="marquee-controls" aria-label="<?php esc_attr_e('Services carousel controls', 'rolkat'); ?>">
+                        <span class="marquee-hint"><i data-lucide="info" style="width:13px;height:13px;"></i> <?php esc_html_e('Hover to pause', 'rolkat'); ?></span>
+                        <button type="button" class="marquee-btn" id="marquee-toggle-btn" aria-label="<?php esc_attr_e('Pause moving cards', 'rolkat'); ?>" title="<?php esc_attr_e('Pause / Play animation', 'rolkat'); ?>">
+                            <i data-lucide="pause" id="marquee-toggle-icon" style="width:14px;height:14px;"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="card-grid">
-                <?php if ($services->have_posts()) : ?>
-                    <?php while ($services->have_posts()) : $services->the_post(); ?>
-                        <?php get_template_part('template-parts/content', 'service'); ?>
-                    <?php endwhile; ?>
-                    <?php wp_reset_postdata(); ?>
-                <?php else : ?>
-                    <?php
-                    foreach (rolkat_default_services() as $service_default) :
-                        ?>
-                        <article class="service-card">
-                            <span class="service-card-number"><?php echo esc_html($service_default['number']); ?></span>
-                            <h3><?php echo esc_html($service_default['title']); ?></h3>
-                            <p><?php echo esc_html($service_default['description']); ?></p>
-                            <a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service')); ?>"><?php esc_html_e('Learn more', 'rolkat'); ?></a>
-                        </article>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+        </div>
+
+        <div class="services-marquee-wrapper" id="services-marquee" role="region" aria-label="<?php esc_attr_e('Continuous Services Carousel', 'rolkat'); ?>">
+            <div class="services-marquee-track" id="services-track">
+                <div class="services-marquee-group" id="services-group-1">
+                    <?php if ($services->have_posts()) : ?>
+                        <?php while ($services->have_posts()) : $services->the_post(); ?>
+                            <?php get_template_part('template-parts/content', 'service'); ?>
+                        <?php endwhile; ?>
+                        <?php wp_reset_postdata(); ?>
+                    <?php else : ?>
+                        <?php foreach (rolkat_default_services() as $service_default) : ?>
+                            <article class="service-card">
+                                <span class="service-card-number"><?php echo esc_html($service_default['number']); ?></span>
+                                <h3><?php echo esc_html($service_default['title']); ?></h3>
+                                <p><?php echo esc_html($service_default['description']); ?></p>
+                                <a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service')); ?>"><?php esc_html_e('Learn more', 'rolkat'); ?></a>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <div class="services-marquee-group" id="services-group-2" aria-hidden="true">
+                    <?php if ($services->have_posts()) : ?>
+                        <?php while ($services->have_posts()) : $services->the_post(); ?>
+                            <?php get_template_part('template-parts/content', 'service'); ?>
+                        <?php endwhile; ?>
+                        <?php wp_reset_postdata(); ?>
+                    <?php else : ?>
+                        <?php foreach (rolkat_default_services() as $service_default) : ?>
+                            <article class="service-card">
+                                <span class="service-card-number"><?php echo esc_html($service_default['number']); ?></span>
+                                <h3><?php echo esc_html($service_default['title']); ?></h3>
+                                <p><?php echo esc_html($service_default['description']); ?></p>
+                                <a class="text-link" href="<?php echo esc_url(get_post_type_archive_link('rolkat_service')); ?>"><?php esc_html_e('Learn more', 'rolkat'); ?></a>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="section section--sand">
         <div class="container">
-            <div class="section-heading">
+            <div class="section-heading reveal">
                 <div>
                     <p class="eyebrow"><?php esc_html_e('Property opportunities', 'rolkat'); ?></p>
                     <h2><?php esc_html_e('Find a place for what comes next.', 'rolkat'); ?></h2>
@@ -68,7 +96,7 @@ $hero_text = get_theme_mod('rolkat_hero_text', __('Thoughtful financial solution
                 <p><?php esc_html_e('Explore current listings and get in touch with our team to learn more.', 'rolkat'); ?></p>
             </div>
             <?php if ($properties->have_posts()) : ?>
-                <div class="card-grid">
+                <div class="card-grid reveal reveal-delay-1">
                     <?php while ($properties->have_posts()) : $properties->the_post(); ?>
                         <?php get_template_part('template-parts/content', 'property'); ?>
                     <?php endwhile; ?>
@@ -83,14 +111,14 @@ $hero_text = get_theme_mod('rolkat_hero_text', __('Thoughtful financial solution
 
     <section class="section">
         <div class="container split">
-            <div class="split-panel">
+            <div class="split-panel reveal">
                 <div class="split-panel-inner">
                     <p class="eyebrow"><?php esc_html_e('Rolkat Financial Services SMC Ltd', 'rolkat'); ?></p>
                     <h3><?php esc_html_e('Serving you better is more than a promise.', 'rolkat'); ?></h3>
                     <p><?php esc_html_e('It is the care we bring to every conversation, decision and relationship.', 'rolkat'); ?></p>
                 </div>
             </div>
-            <div class="split-copy">
+            <div class="split-copy reveal reveal-delay-2">
                 <p class="eyebrow"><?php esc_html_e('A little about us', 'rolkat'); ?></p>
                 <h2><?php esc_html_e('Good decisions start with a good conversation.', 'rolkat'); ?></h2>
                 <p><?php esc_html_e('ROLKAT brings financial services, property management and real estate together under one roof. We take time to understand what matters to you, then help you find a practical way forward.', 'rolkat'); ?></p>
@@ -105,7 +133,7 @@ $hero_text = get_theme_mod('rolkat_hero_text', __('Thoughtful financial solution
     </section>
 
     <section class="section" id="loan-calculator">
-        <div class="container calculator">
+        <div class="container calculator reveal">
             <div>
                 <p class="eyebrow"><?php esc_html_e('Plan with confidence', 'rolkat'); ?></p>
                 <h2><?php esc_html_e('A clearer picture of your loan.', 'rolkat'); ?></h2>
