@@ -2,18 +2,18 @@
   "settings": {
     "siteName": "Rolkat Financial",
     "tagline": "Serving you better",
-    "heroEyebrow": "Financial services � Property � Real estate",
+    "heroEyebrow": "Financial Services · Property Management · Real Estate",
     "heroTitle": "A better way to move forward.",
     "heroText": "Thoughtful financial solutions and property services, shaped around your goals and built on relationships you can trust.",
-    "phone": "+256 700 123 456",
-    "email": "info@rolkat.com",
-    "officeAddress": "Plot 12, Kampala Road, Kampala, Uganda",
-    "workingHours": "Monday - Friday: 8:30 AM - 5:00 PM",
-    "whatsappNumber": "+256700123456",
+    "phone": "+256 787 165 366",
+    "email": "katongolejames122@gmail.com",
+    "officeAddress": "Hanora Plaza, Zana, Entebbe Road, Opposite Be Energies",
+    "workingHours": "Monday – Friday: 8:00 AM – 5:30 PM, Saturday: 9:00 AM – 2:00 PM",
+    "whatsappNumber": "+256787165366",
     "calculatorDefaults": {
-      "amount": 5000000,
+      "amount": 1000000,
       "rate": 18,
-      "term": 3
+      "term": 1
     },
     "adminUsername": "admin",
     "adminPassword": "rolkat2026"
@@ -22,20 +22,74 @@
     {
       "id": "srv-1",
       "number": "01",
-      "title": "Loans",
-      "description": "Explore financing options designed around your needs, plans and circumstances."
+      "title": "Micro Loans",
+      "description": "Fast, flexible small credit for boda boda cyclists, small traders, and daily earners with daily or weekly repayment options and 24-hour approval."
     },
     {
       "id": "srv-2",
       "number": "02",
-      "title": "Property management",
-      "description": "Reliable support to help property owners care for and manage their investments."
+      "title": "Small Business Loans",
+      "description": "Working capital and modest expansion financing for retail shops, kiosks, and established enterprises assessed on real cash-flow."
     },
     {
       "id": "srv-3",
       "number": "03",
-      "title": "Real estate",
-      "description": "Personal guidance for property decisions, from exploring opportunities to taking the next step."
+      "title": "Group Loans",
+      "description": "Solidarity lending for trader groups, market associations, and boda boda stages with mutual guarantees and weekly collections."
+    },
+    {
+      "id": "srv-4",
+      "number": "04",
+      "title": "Emergency Loans",
+      "description": "Same-day rapid credit for unexpected medical expenses, motorcycle repairs, or time-sensitive inventory emergencies."
+    },
+    {
+      "id": "srv-5",
+      "number": "05",
+      "title": "Market Vendor Loans",
+      "description": "Tailored daily working capital for fresh food sellers and market stallholders to buy morning stock and repay each evening."
+    },
+    {
+      "id": "srv-6",
+      "number": "06",
+      "title": "Tenant Sourcing & Screening",
+      "description": "Comprehensive vetting of tenant National IDs, background references, and income viability compliant with the Landlord and Tenant Act, 2022."
+    },
+    {
+      "id": "srv-7",
+      "number": "07",
+      "title": "Rent Collection & Remittance",
+      "description": "Disciplined rent collection on due dates, official electronic receipting, arrears follow-up, and timely net remittances to owners."
+    },
+    {
+      "id": "srv-8",
+      "number": "08",
+      "title": "Property Maintenance & Repairs",
+      "description": "Routine upkeep and prompt coordination of emergency repairs (plumbing, electrical, structural) using thoroughly vetted contractors."
+    },
+    {
+      "id": "srv-9",
+      "number": "09",
+      "title": "Diaspora & Absentee Landlord Oversight",
+      "description": "Dedicated caretaking, condition inspections with photographic reports, utility tracking, and transparent monthly accounting for owners living abroad."
+    },
+    {
+      "id": "srv-10",
+      "number": "10",
+      "title": "Land & Plot Sales",
+      "description": "Connecting buyers and sellers with verified residential and commercial plots across Mailo, Freehold, and Leasehold land tenures."
+    },
+    {
+      "id": "srv-11",
+      "number": "11",
+      "title": "Property Sales & Leasing",
+      "description": "Professional listing, advertising, and negotiation for residential homes, apartment blocks, commercial shops, and office suites."
+    },
+    {
+      "id": "srv-12",
+      "number": "12",
+      "title": "Title Search & Due Diligence",
+      "description": "Rigorous land registry searches, boundary surveys, encumbrance verifications, and legal support to safeguard clients against property fraud."
     }
   ],
   "properties": [
@@ -64,32 +118,32 @@
       "description": "50x100 ft ready-to-build residential plot with private mailo land title in an established neighbourhood."
     },
     {
-      "price": "UGX 250,000,000",
+      "id": "prop-1791542012384",
       "title": "Waterfront Plot - Entebbe",
-      "description": "Prime lake view plot suitable for vacation villa or boutique hospitality.",
-      "status": "Available",
       "location": "Entebbe, Wakiso",
-      "id": "prop-1791542012384"
+      "price": "UGX 250,000,000",
+      "status": "Available",
+      "description": "Prime lake view plot suitable for vacation villa or boutique hospitality."
     }
   ],
   "team": [
     {
       "id": "team-1",
-      "name": "Robert Kato",
+      "name": "Katongole James",
       "role": "Managing Director",
-      "bio": "Over 15 years experience leading financial advisory, credit structuring, and strategic investments."
+      "bio": "Founder leading strategy, regulatory compliance, credit approvals, and customer-first service delivery."
     },
     {
       "id": "team-2",
       "name": "Sarah Namukasa",
       "role": "Head of Property Management",
-      "bio": "Specializes in commercial tenancy management, tenant vetting, and property asset maintenance."
+      "bio": "Specializes in tenancy administration, landlord relations, routine inspections, and property maintenance."
     },
     {
       "id": "team-3",
       "name": "David Ochieng",
       "role": "Senior Real Estate Consultant",
-      "bio": "Expert in property valuation, acquisition advisory, and conveyance across urban centers."
+      "bio": "Expert in property valuation, title search due diligence, land acquisition, and conveyance."
     }
   ],
   "submissions": [
@@ -99,7 +153,7 @@
       "name": "Grace Tumusiime",
       "email": "grace.t@example.com",
       "phone": "+256 772 123456",
-      "service": "Loans",
+      "service": "Small Business Loans",
       "message": "Inquiring about SME business expansion loan terms and eligibility criteria.",
       "status": "New"
     },
@@ -109,7 +163,7 @@
       "name": "Patrick Mukasa",
       "email": "patrick@example.com",
       "phone": "+256 782 999111",
-      "service": "Real estate",
+      "service": "Land & Plot Sales",
       "message": "Looking for residential property in Entebbe.",
       "status": "New"
     }
