@@ -1,0 +1,12 @@
+{
+  "name": "rolkat-website-preview",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local preview server for the ROLKAT WordPress theme",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "lucide": "^1.54.0"
+  }
+}

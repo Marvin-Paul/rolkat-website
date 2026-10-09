@@ -1,0 +1,117 @@
+{
+  "settings": {
+    "siteName": "Rolkat Financial",
+    "tagline": "Serving you better",
+    "heroEyebrow": "Financial services � Property � Real estate",
+    "heroTitle": "A better way to move forward.",
+    "heroText": "Thoughtful financial solutions and property services, shaped around your goals and built on relationships you can trust.",
+    "phone": "+256 700 123 456",
+    "email": "info@rolkat.com",
+    "officeAddress": "Plot 12, Kampala Road, Kampala, Uganda",
+    "workingHours": "Monday - Friday: 8:30 AM - 5:00 PM",
+    "whatsappNumber": "+256700123456",
+    "calculatorDefaults": {
+      "amount": 5000000,
+      "rate": 18,
+      "term": 3
+    },
+    "adminUsername": "admin",
+    "adminPassword": "rolkat2026"
+  },
+  "services": [
+    {
+      "id": "srv-1",
+      "number": "01",
+      "title": "Loans",
+      "description": "Explore financing options designed around your needs, plans and circumstances."
+    },
+    {
+      "id": "srv-2",
+      "number": "02",
+      "title": "Property management",
+      "description": "Reliable support to help property owners care for and manage their investments."
+    },
+    {
+      "id": "srv-3",
+      "number": "03",
+      "title": "Real estate",
+      "description": "Personal guidance for property decisions, from exploring opportunities to taking the next step."
+    }
+  ],
+  "properties": [
+    {
+      "id": "prop-1",
+      "title": "Modern Residential Villa",
+      "location": "Kololo, Kampala",
+      "price": "UGX 850,000,000",
+      "status": "Available",
+      "description": "4-bedroom luxury home with spacious compound, modern kitchen, and perimeter security."
+    },
+    {
+      "id": "prop-2",
+      "title": "Prime Commercial Office Space",
+      "location": "Nakasero, Kampala",
+      "price": "UGX 3,500,000 / mo",
+      "status": "Available",
+      "description": "Centrally located commercial suite with 24/7 power backup, high-speed fibre, and reserved parking."
+    },
+    {
+      "id": "prop-3",
+      "title": "Residential Land Opportunity",
+      "location": "Kira Municipality, Wakiso",
+      "price": "UGX 120,000,000",
+      "status": "Under offer",
+      "description": "50x100 ft ready-to-build residential plot with private mailo land title in an established neighbourhood."
+    },
+    {
+      "price": "UGX 250,000,000",
+      "title": "Waterfront Plot - Entebbe",
+      "description": "Prime lake view plot suitable for vacation villa or boutique hospitality.",
+      "status": "Available",
+      "location": "Entebbe, Wakiso",
+      "id": "prop-1791542012384"
+    }
+  ],
+  "team": [
+    {
+      "id": "team-1",
+      "name": "Robert Kato",
+      "role": "Managing Director",
+      "bio": "Over 15 years experience leading financial advisory, credit structuring, and strategic investments."
+    },
+    {
+      "id": "team-2",
+      "name": "Sarah Namukasa",
+      "role": "Head of Property Management",
+      "bio": "Specializes in commercial tenancy management, tenant vetting, and property asset maintenance."
+    },
+    {
+      "id": "team-3",
+      "name": "David Ochieng",
+      "role": "Senior Real Estate Consultant",
+      "bio": "Expert in property valuation, acquisition advisory, and conveyance across urban centers."
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sub-1",
+      "date": "2026-10-08T10:15:00.000Z",
+      "name": "Grace Tumusiime",
+      "email": "grace.t@example.com",
+      "phone": "+256 772 123456",
+      "service": "Loans",
+      "message": "Inquiring about SME business expansion loan terms and eligibility criteria.",
+      "status": "New"
+    },
+    {
+      "id": "sub-1791541979933",
+      "date": "2026-10-09T10:32:59.933Z",
+      "name": "Patrick Mukasa",
+      "email": "patrick@example.com",
+      "phone": "+256 782 999111",
+      "service": "Real estate",
+      "message": "Looking for residential property in Entebbe.",
+      "status": "New"
+    }
+  ]
+}

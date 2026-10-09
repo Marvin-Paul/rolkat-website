@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROLKAT Admin Dashboard</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen" class="login-screen" style="display: none;">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-badge">R</div>
+      <div>
+        <div class="brand-title">ROLKAT Financial</div>
+        <div class="brand-subtitle">Site Management & Admin</div>
+      </div>
+    </div>
+    <h1 class="login-title">Sign in</h1>
+    <p class="login-subtitle">Enter your administrator credentials to manage website content and settings.</p>
+    
+    <div class="login-notice">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="key-round" style="width: 16px; height: 16px;"></i>
+        <strong>Default credentials:</strong>
+      </div>
+      <div style="margin-top: 4px;">
+        Username: <code>admin</code> &middot; Password: <code>rolkat2026</code>
+      </div>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" value="admin" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" value="rolkat2026" required autocomplete="current-password">
+      </div>
+      <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="login-remember" checked>
+        <label for="login-remember" style="margin-bottom:0; font-weight:normal; cursor:pointer;">Keep me signed in</label>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 11px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <i data-lucide="log-in" style="width: 16px; height: 16px;"></i> Sign In to Dashboard
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Main Admin App -->
+<div id="admin-app" class="admin-app" style="display: none;">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="brand-badge">R</div>
+      <div>
+        <div class="brand-title">ROLKAT CMS</div>
+        <div class="brand-subtitle">Admin Portal</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="overview">
+        <i data-lucide="layout-dashboard"></i> Dashboard
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <i data-lucide="sliders"></i> Site Settings
+      </button>
+      <button class="nav-item" data-tab="properties">
+        <i data-lucide="building-2"></i> Properties
+      </button>
+      <button class="nav-item" data-tab="services">
+        <i data-lucide="briefcase"></i> Services
+      </button>
+      <button class="nav-item" data-tab="team">
+        <i data-lucide="users"></i> Team
+      </button>
+      <button class="nav-item" data-tab="submissions">
+        <i data-lucide="inbox"></i> Enquiries <span class="badge" id="badge-enquiries"></span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/" target="_blank" class="nav-item" style="border: 1px solid rgba(255,255,255,0.15);">
+        <i data-lucide="external-link"></i> View Public Site
+      </a>
+      <div class="user-info">
+        <i data-lucide="user-check" style="width: 16px; height: 16px;"></i>
+        <span>Logged in as <strong>Admin</strong></span>
+      </div>
+      <button id="logout-btn" class="nav-item" style="color: #ff9d9d;">
+        <i data-lucide="log-out"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Area -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button id="mobile-menu-toggle" class="mobile-toggle" aria-label="Toggle Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+        <h2 id="current-page-title" class="page-title">Dashboard Overview</h2>
+      </div>
+      <div class="topbar-right">
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
+          <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Preview Live Website
+        </a>
+      </div>
+    </header>
+
+    <div class="content-body">
+      <!-- 1. Overview Tab -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="building-2"></i></div>
+            <div>
+              <div class="stat-value" id="stat-properties">0</div>
+              <div class="stat-label">Properties Listed</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="briefcase"></i></div>
+            <div>
+              <div class="stat-value" id="stat-services">0</div>
+              <div class="stat-label">Services Offered</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="users"></i></div>
+            <div>
+              <div class="stat-value" id="stat-team">0</div>
+              <div class="stat-label">Team Profiles</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="inbox"></i></div>
+            <div>
+              <div class="stat-value" id="stat-enquiries">0</div>
+              <div class="stat-label">Total Enquiries</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Recent Client Enquiries</h3>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('submissions')">View All Enquiries</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Client Name</th>
+                    <th>Email Address</th>
+                    <th>Service Interest</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-enquiries-table">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Settings Tab -->
+      <section id="tab-settings" class="tab-pane">
+        <form id="settings-form">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Brand Identity</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="setting-siteName">Company / Site Name</label>
+                  <input type="text" id="setting-siteName" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-tagline">Tagline / Motto</label>
+                  <input type="text" id="setting-tagline" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Homepage Hero Section</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="setting-heroEyebrow">Hero Eyebrow Text</label>
+                <input type="text" id="setting-heroEyebrow">
+              </div>
+              <div class="form-group">
+                <label for="setting-heroTitle">Hero Headline</label>
+                <input type="text" id="setting-heroTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="setting-heroText">Hero Introduction Description</label>
+                <textarea id="setting-heroText" required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Contact Details & Location</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="setting-phone">Public Phone Number</label>
+                  <input type="text" id="setting-phone" placeholder="+256 700 000 000" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-email">Public Enquiry Email</label>
+                  <input type="email" id="setting-email" placeholder="info@rolkat.com" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-whatsappNumber">WhatsApp Number (e.g. +256700000000)</label>
+                  <input type="text" id="setting-whatsappNumber">
+                </div>
+                <div class="form-group">
+                  <label for="setting-workingHours">Working Hours</label>
+                  <input type="text" id="setting-workingHours" placeholder="Mon - Fri: 8:30 AM - 5:00 PM">
+                </div>
+                <div class="form-group full-width">
+                  <label for="setting-officeAddress">Office Physical Address</label>
+                  <textarea id="setting-officeAddress" rows="2" required></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Loan Calculator Default Parameters</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="setting-calcAmount">Default Loan Amount (UGX)</label>
+                  <input type="number" id="setting-calcAmount" min="100000" step="100000" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-calcRate">Default Annual Interest Rate (%)</label>
+                  <input type="number" id="setting-calcRate" min="0" max="100" step="0.1" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-calcTerm">Default Term (Years)</label>
+                  <input type="number" id="setting-calcTerm" min="1" max="30" step="1" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Administrator Account Credentials</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="setting-adminUsername">Admin Username</label>
+                  <input type="text" id="setting-adminUsername" required>
+                </div>
+                <div class="form-group">
+                  <label for="setting-adminPassword">Admin Password</label>
+                  <input type="text" id="setting-adminPassword" placeholder="Enter password" required>
+                  <div class="hint">Change the password here to update your login credentials.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 40px; display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary" style="padding: 12px 28px; font-size: 1rem; display:inline-flex; align-items:center; gap:8px;">
+              <i data-lucide="save"></i> Save All Settings
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 3. Properties Tab -->
+      <section id="tab-properties" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Property Listings</h3>
+            <button class="btn btn-primary btn-sm" onclick="openPropertyModal()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Property Listing
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title & Description</th>
+                    <th>Location</th>
+                    <th>Display Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="properties-list">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Services Tab -->
+      <section id="tab-services" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Company Services</h3>
+            <button class="btn btn-primary btn-sm" onclick="openServiceModal()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Service
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Code / Index</th>
+                    <th>Service Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="services-list">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Team Tab -->
+      <section id="tab-team" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Team Profiles</h3>
+            <button class="btn btn-primary btn-sm" onclick="openTeamModal()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Team Member
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Role / Title</th>
+                    <th>Bio / Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="team-list">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Enquiries Tab -->
+      <section id="tab-submissions" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Client Contact Form Submissions</h3>
+            <button id="export-csv-btn" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px;">
+              <i data-lucide="download" style="width: 14px; height: 14px;"></i> Export to CSV
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Received Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Service</th>
+                    <th>Message</th>
+                    <th>Status / Action</th>
+                  </tr>
+                </thead>
+                <tbody id="submissions-list">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Property -->
+<div id="property-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="prop-modal-title">Property Listing</h3>
+      <button class="modal-close" onclick="closeModal('property-modal')">&times;</button>
+    </div>
+    <form id="property-form">
+      <div class="modal-body">
+        <input type="hidden" id="prop-modal-id">
+        <div class="form-group">
+          <label for="prop-title">Listing Title</label>
+          <input type="text" id="prop-title" required placeholder="e.g. Modern Residential Villa">
+        </div>
+        <div class="form-group">
+          <label for="prop-location">Location</label>
+          <input type="text" id="prop-location" required placeholder="e.g. Kololo, Kampala">
+        </div>
+        <div class="form-group">
+          <label for="prop-price">Price Display</label>
+          <input type="text" id="prop-price" required placeholder="e.g. UGX 850,000,000 or Contact for price">
+        </div>
+        <div class="form-group">
+          <label for="prop-status">Listing Status</label>
+          <select id="prop-status">
+            <option value="Available">Available</option>
+            <option value="Under offer">Under offer</option>
+            <option value="Sold / Rented">Sold / Rented</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="prop-description">Property Description / Summary</label>
+          <textarea id="prop-description" placeholder="Brief details about the property..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('property-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Property</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Service -->
+<div id="service-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="serv-modal-title">Service Details</h3>
+      <button class="modal-close" onclick="closeModal('service-modal')">&times;</button>
+    </div>
+    <form id="service-form">
+      <div class="modal-body">
+        <input type="hidden" id="serv-modal-id">
+        <div class="form-group">
+          <label for="serv-number">Number / Identifier (e.g. 01, 02)</label>
+          <input type="text" id="serv-number" required placeholder="01">
+        </div>
+        <div class="form-group">
+          <label for="serv-title">Service Title</label>
+          <input type="text" id="serv-title" required placeholder="e.g. Loans">
+        </div>
+        <div class="form-group">
+          <label for="serv-description">Description</label>
+          <textarea id="serv-description" required rows="3" placeholder="Explain the service..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('service-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Service</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Team -->
+<div id="team-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="team-modal-title">Team Member Profile</h3>
+      <button class="modal-close" onclick="closeModal('team-modal')">&times;</button>
+    </div>
+    <form id="team-form">
+      <div class="modal-body">
+        <input type="hidden" id="team-modal-id">
+        <div class="form-group">
+          <label for="team-name">Full Name</label>
+          <input type="text" id="team-name" required placeholder="e.g. Robert Kato">
+        </div>
+        <div class="form-group">
+          <label for="team-role">Role / Position</label>
+          <input type="text" id="team-role" required placeholder="e.g. Managing Director">
+        </div>
+        <div class="form-group">
+          <label for="team-bio">Short Biography</label>
+          <textarea id="team-bio" rows="3" placeholder="Brief professional background..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('team-modal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="/admin/lucide.min.js"></script>
+<script src="/admin/admin.js"></script>
+</body>
+</html>
