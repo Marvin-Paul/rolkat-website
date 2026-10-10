@@ -155,6 +155,20 @@
       if (!res.ok) return;
       const data = await res.json();
       const s = data.settings || {};
+      const setText = (id, value) => {
+        const element = document.getElementById(id);
+        if (element && value) element.textContent = value;
+      };
+      const page = document.body.dataset.page;
+      const pageSettings = (s.pages || {})[page] || {};
+      const detail = document.getElementById(`service-${page}`) || document.getElementById("team-full-page");
+      if (detail) {
+        const heading = detail.querySelector("h1");
+        const introduction = detail.querySelector(".section-heading > p, .section-heading > div:last-child > p");
+        if (heading && pageSettings.title) heading.textContent = pageSettings.title;
+        if (introduction && pageSettings.introduction) introduction.textContent = pageSettings.introduction;
+        if (pageSettings.title) document.title = `${pageSettings.title} | ${s.siteName || "ROLKAT Financial"}`;
+      }
 
       // Site Identity
       if (s.siteName) {
@@ -165,13 +179,19 @@
       }
 
       // Hero Section Text
-      if (s.heroEyebrow) document.getElementById("hero-eyebrow").textContent = s.heroEyebrow;
-      if (s.heroTitle) document.getElementById("hero-title").textContent = s.heroTitle;
-      if (s.heroText) document.getElementById("hero-text").textContent = s.heroText;
-      if (s.tagline) document.getElementById("hero-note").textContent = s.tagline;
+      setText("hero-eyebrow", s.heroEyebrow);
+      setText("hero-title", s.heroTitle);
+      setText("hero-text", s.heroText);
+      setText("hero-note", s.tagline);
 
       // Hero Background Slider Images (from site-level images object)
       const imgs = data.images || {};
+      document.querySelectorAll("img[data-image-key]").forEach((image) => {
+        const key = image.dataset.imageKey;
+        const source = imgs[key] || (key === "siteLogo" ? "/assets/images/rfs-logo.svg" : "");
+        image.hidden = !source;
+        if (source) image.src = source;
+      });
       const slideKeys = ["heroSlide1", "heroSlide2", "heroSlide3"];
       slideKeys.forEach((key, i) => {
         const slideEl = document.getElementById(`hero-slide-${i}`);
@@ -209,22 +229,22 @@
       }
 
       // Contact Info
-      if (s.phone) {
+      if (s.phone && document.getElementById("site-phone")) {
         const phoneEl = document.getElementById("site-phone");
         phoneEl.innerHTML = `<a href="tel:${escape(s.phone.replace(/\s+/g, ""))}">${escape(s.phone)}</a>`;
       }
-      if (s.email) {
+      if (s.email && document.getElementById("site-email")) {
         const emailEl = document.getElementById("site-email");
         emailEl.innerHTML = `<a href="mailto:${escape(s.email)}">${escape(s.email)}</a>`;
       }
-      if (s.officeAddress) {
+      if (s.officeAddress && document.getElementById("site-address")) {
         document.getElementById("site-address").textContent = s.officeAddress;
       }
-      if (s.workingHours) {
+      if (s.workingHours && document.getElementById("site-hours")) {
         document.getElementById("site-hours").textContent = s.workingHours;
         document.getElementById("site-hours-container").style.display = "block";
       }
-      if (s.whatsappNumber) {
+      if (s.whatsappNumber && document.getElementById("site-whatsapp-link")) {
         const waClean = s.whatsappNumber.replace(/[^0-9]/g, "");
         const waLink = document.getElementById("site-whatsapp-link");
         waLink.href = `https://wa.me/${waClean}`;
@@ -232,7 +252,7 @@
       }
 
       // Services Marquee & Grid Hydration
-      const services = data.services || [];
+      const services = (data.services || []).filter((service) => !page || service.category === page);
       const group1 = document.getElementById("services-group-1");
       const group2 = document.getElementById("services-group-2");
       const servGrid = document.getElementById("services-grid");
@@ -242,17 +262,26 @@
             <span class="service-card-number">${escape(srv.number || "01")}</span>
             <h3>${escape(srv.title)}</h3>
             <p>${escape(srv.description)}</p>
-            <a class="text-link" href="#contact">Learn more</a>
+            <a class="text-link" href="${!page && ["loans", "property-management", "real-estate"].includes(srv.category) ? `/${srv.category}` : "/#contact"}">${page ? "Enquire about this service" : "Learn more"}</a>
           </article>
       `;
 
-      if (group1 && services.length > 0) {
+      if (detail && page !== "administration") {
+        const features = detail.querySelector(".service-detail-features");
+        if (features) features.innerHTML = services.map((service) => `<div class="feature-chip">${escape(service.title)}</div>`).join("");
+        const serviceHeading = document.querySelector("#services .section-heading h2");
+        if (serviceHeading) serviceHeading.textContent = `${page === "loans" ? "Loan" : page === "real-estate" ? "Real estate" : "Property management"} services`;
+        const serviceIntroduction = document.querySelector("#services .services-heading-side > p");
+        if (serviceIntroduction) serviceIntroduction.textContent = "Contact our team to discuss the service that suits your needs.";
+      }
+
+      if (group1) {
         const html = services.map(cardMarkup).join("\n");
         group1.innerHTML = html;
         if (group2) {
           group2.innerHTML = html;
         }
-      } else if (servGrid && services.length > 0) {
+      } else if (servGrid) {
         servGrid.innerHTML = services.map(cardMarkup).join("\n");
       }
 
@@ -271,6 +300,7 @@
           <article class="property-card property-card--marquee">
             <div class="property-card-placeholder${hasImg ? " has-image" : ""}" ${hasImg ? `style="background-image:url('${escape(prop.image)}');"` : ""} aria-hidden="true"></div>
             <div class="property-card-body">
+              ${prop.imageIsIllustration && hasImg ? '<p class="property-image-disclosure">Illustrative image</p>' : ""}
               <div class="property-card-tags">
                 <span class="property-card-status">${escape(prop.status || "Available")}</span>
                 ${prop.type ? `<span class="property-card-type">${escape(prop.type)}</span>` : ""}
@@ -281,7 +311,7 @@
                 <strong>${escape(prop.price || "Contact for price")}</strong>
               </div>
               <p style="margin-top:8px;">${escape(prop.description || "")}</p>
-              <a class="text-link" href="#contact">Enquire about property</a>
+              <a class="text-link" href="/#contact">Enquire about property</a>
             </div>
           </article>
         `;
@@ -298,10 +328,10 @@
 
         // Marquee always shows ALL listings (scrolling carousel)
         const allHtml = properties.length > 0 ? properties.map(propCardMarkup).join("\n") : "";
-        if (propGroup1 && properties.length > 0) {
+        if (propGroup1) {
           propGroup1.innerHTML = allHtml;
         }
-        if (propGroup2 && properties.length > 0) {
+        if (propGroup2) {
           propGroup2.innerHTML = allHtml;
         }
 
@@ -361,10 +391,31 @@
       }
 
       // Team Grid - Image cards with optional PDF profile link
-      const team = data.team || [];
-      const teamGrid = document.getElementById("team-grid");
-      if (teamGrid && team.length > 0) {
-        teamGrid.innerHTML = team
+      const team = (data.team || []).slice().sort((a, b) => (a.rank || Infinity) - (b.rank || Infinity));
+      const memberById = new Map(team.map((member) => [member.id, member]));
+      const chart = document.getElementById("administration-chart");
+      if (chart) {
+        const rendered = new Set();
+        const renderBranch = (member) => {
+          if (rendered.has(member.id)) return "";
+          rendered.add(member.id);
+          const children = team.filter((child) => child.reportsTo === member.id);
+          // Managers appear in the source chart before support staff.
+          children.sort((a, b) => Number(b.level === "Manager") - Number(a.level === "Manager"));
+          const level = member.level === "Executive" ? "executive" : member.level === "Manager" ? "manager" : "support";
+          const childMarkup = children.map(renderBranch).join("");
+          const portrait = member.image ? `<img class="hierarchy-portrait" src="${escape(member.image)}" alt="" loading="lazy">` : "";
+          return `<li><a class="hierarchy-node hierarchy-node--${level}${portrait ? " hierarchy-node--photo" : ""}" href="#staff-${escape(member.id)}">${portrait}<strong>${escape(member.name)}</strong><span>${escape(member.role)}</span></a>${childMarkup ? `<ul>${childMarkup}</ul>` : ""}</li>`;
+        };
+        const roots = team.filter((member) => !member.reportsTo || !memberById.has(member.reportsTo));
+        let branches = roots.map(renderBranch).join("");
+        branches += team.filter((member) => !rendered.has(member.id)).map(renderBranch).join("");
+        chart.innerHTML = `<ul class="hierarchy-tree">${branches}</ul>`;
+      }
+      const teamGrid = document.getElementById("team-grid") || document.getElementById("team-full-page-grid");
+      if (teamGrid) {
+        const visibleTeam = teamGrid.id === "team-grid" ? team.slice(0, 3) : team;
+        teamGrid.innerHTML = visibleTeam
           .map(
             (m) => {
               const hasImg = m.image && typeof m.image === "string" && m.image.length > 0;
@@ -372,11 +423,22 @@
               // Also support a reference PDF URL field
               const pdfHref = hasPdf ? m.pdf : (m.pdfUrl || "");
               const hasAnyPdf = pdfHref && pdfHref.length > 0;
+              const initials = String(m.name || "").trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+              if (page === "administration") {
+                const manager = memberById.get(m.reportsTo);
+                return `<tr id="staff-${escape(m.id)}">
+                  <td data-label="Rank">${escape(m.rank || "-")}</td>
+                  <th scope="row"><div class="staff-person">${hasImg ? `<img class="staff-avatar" src="${escape(m.image)}" alt="" loading="lazy">` : `<span class="staff-avatar" aria-hidden="true">${escape(initials)}</span>`}<span>${escape(m.name)}</span></div>${hasAnyPdf ? `<a class="text-link" href="${escape(pdfHref)}" target="_blank" rel="noopener noreferrer">View profile PDF</a>` : ""}</th>
+                  <td data-label="Position">${escape(m.role)}${m.bio ? `<p class="staff-biography">${escape(m.bio)}</p>` : ""}</td>
+                  <td data-label="Level">${escape(m.level || "Unassigned")}</td>
+                  <td data-label="Reports to (inferred)">${escape(manager ? manager.role === "Chief Executive Officer" ? "CEO" : manager.role : m.reportsTo ? "Unassigned" : "Board / owner")}</td>
+                </tr>`;
+              }
 
               return `
           <article class="team-card team-card--image">
             <div class="team-card-media">
-              <div class="team-card-placeholder${hasImg ? " has-image" : ""}" ${hasImg ? `style="background-image:url('${escape(m.image)}');"` : ""} aria-hidden="true"></div>
+              <div class="team-card-placeholder${hasImg ? " has-image" : " team-card-initials"}" ${hasImg ? `style="background-image:url('${escape(m.image)}');"` : ""} aria-hidden="true">${hasImg ? "" : escape(initials)}</div>
             </div>
             <div class="team-card-body">
               <span class="team-card-role">${escape(m.role || "Consultant")}</span>
@@ -393,6 +455,8 @@
             }
           )
           .join("");
+        if (!team.length) teamGrid.innerHTML = page === "administration" ? '<tr><td colspan="5">Please contact our office for administration enquiries.</td></tr>' : '<p class="empty-state">Please contact our office for administration enquiries.</p>';
+        setText("administration-member-count", `${team.length} ${team.length === 1 ? "member" : "members"}`);
       }
 
       // Calculator defaults

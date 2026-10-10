@@ -1,6 +1,49 @@
 let appData = null;
 let currentTab = "overview";
 let knownDocuments = []; // cache of public documents from /api/content
+const pageLabels = { loans: "Loans", "property-management": "Property Management", "real-estate": "Real Estate", administration: "Administration" };
+
+function renderPagesForm() {
+  const defaults = {
+    loans: { title: "Loans that work with your earning cycle.", introduction: "Fast, fair and flexible credit built for everyday Ugandans. 24-hour approval with respectful collection and clear, UMRA-compliant terms." },
+    "property-management": { title: "Professional property care for landlords, near and far.", introduction: "Tenant vetting, disciplined rent collection, maintenance coordination and transparent monthly reports for local and diaspora landlords." },
+    "real-estate": { title: "Land, homes and commercial space", introduction: "Professional listing, verified titles and due diligence so buyers and sellers can transact with confidence across all Ugandan land tenures." },
+    administration: { title: "Administration hierarchy", introduction: "Rolkat Financial Services SMC Ltd. Serving you better." },
+  };
+  document.getElementById("page-fields").innerHTML = Object.entries(pageLabels).map(([key, label]) => {
+    const page = (appData.settings.pages || {})[key] || defaults[key];
+    return `<fieldset style="border:0;border-bottom:1px solid #ddd;padding:20px 0;min-width:0;">
+      <legend>${label}</legend>
+      <div class="form-group"><label for="page-${key}-title">Page Heading</label><input id="page-${key}-title" value="${escapeHtml(page.title)}" required></div>
+      <div class="form-group"><label for="page-${key}-intro">Introduction</label><textarea id="page-${key}-intro" rows="3">${escapeHtml(page.introduction)}</textarea></div>
+      <a class="btn btn-secondary btn-sm" href="/${key}" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i> View ${label}</a>
+    </fieldset>`;
+  }).join("");
+}
+
+async function handleSavePages(event) {
+  event.preventDefault();
+  const button = event.submitter;
+  if (button) button.disabled = true;
+  const pages = Object.fromEntries(Object.keys(pageLabels).map((key) => [key, {
+    title: document.getElementById(`page-${key}-title`).value.trim(),
+    introduction: document.getElementById(`page-${key}-intro`).value.trim(),
+  }]));
+  try {
+    const response = await fetch("/api/admin/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${getAuthToken()}` },
+      body: JSON.stringify({ pages }),
+    });
+    if (!response.ok) throw new Error("Could not save website pages");
+    showToast("Website pages saved", "success");
+    await loadAdminData();
+  } catch (error) {
+    showToast(error.message, "error");
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
 
 function getAuthToken() {
   return sessionStorage.getItem("rolkat_admin_token") || localStorage.getItem("rolkat_admin_token");
@@ -96,9 +139,13 @@ async function loadAdminData() {
 
 function renderAll() {
   if (!appData) return;
+  document.querySelectorAll(".admin-brand-logo").forEach((logo) => {
+    logo.src = appData.images?.siteLogo || "/assets/images/rfs-logo.svg";
+  });
   knownDocuments = appData.documents || [];
   renderOverview();
   renderSettingsForm();
+  renderPagesForm();
   renderImagesTab();
   renderDocumentsTab();
   renderProperties();
@@ -284,11 +331,13 @@ function openPropertyModal(id = null) {
       document.getElementById("prop-type").value = item.type || "Sale";
       document.getElementById("prop-description").value = item.description || "";
       existingImage = item.image || "";
+      document.getElementById("prop-image-illustration").checked = Boolean(item.imageIsIllustration);
     }
   } else {
     document.getElementById("prop-modal-title").textContent = "Add Property Listing";
   }
 
+  document.getElementById("prop-image").value = existingImage;
   setupImageUploader(
     modal.querySelector(".image-uploader"),
     existingImage,
@@ -313,6 +362,7 @@ async function handlePropertySubmit(e) {
     type: document.getElementById("prop-type").value,
     description: document.getElementById("prop-description").value.trim(),
     image: document.getElementById("prop-image").value || "",
+    imageIsIllustration: document.getElementById("prop-image-illustration").checked,
   };
 
   const method = id ? "PUT" : "POST";
@@ -366,7 +416,7 @@ function renderServices() {
       (s) => `
     <tr>
       <td><span class="status-pill status-new">${escapeHtml(s.number || "01")}</span></td>
-      <td><strong>${escapeHtml(s.title)}</strong></td>
+      <td><strong>${escapeHtml(s.title)}</strong><br><a href="/${escapeHtml(s.category || 'loans')}" target="_blank" rel="noopener noreferrer">${escapeHtml(pageLabels[s.category] || 'Loans')}</a></td>
       <td><span style="font-size:0.88rem;color:#444;">${escapeHtml(s.description)}</span></td>
       <td>
         <button class="btn btn-secondary btn-sm" onclick="openServiceModal('${s.id}')" style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i>Edit</button>
@@ -390,6 +440,7 @@ function openServiceModal(id = null) {
       document.getElementById("serv-modal-title").textContent = "Edit Service";
       document.getElementById("serv-number").value = item.number;
       document.getElementById("serv-title").value = item.title;
+      document.getElementById("serv-category").value = item.category || "loans";
       document.getElementById("serv-description").value = item.description;
     }
   } else {
@@ -405,6 +456,7 @@ async function handleServiceSubmit(e) {
   const payload = {
     number: document.getElementById("serv-number").value.trim(),
     title: document.getElementById("serv-title").value.trim(),
+    category: document.getElementById("serv-category").value,
     description: document.getElementById("serv-description").value.trim(),
   };
 
@@ -449,7 +501,8 @@ async function deleteService(id) {
 function renderTeam() {
   const container = document.getElementById("team-list");
   if (!container) return;
-  const list = appData.team || [];
+  const list = (appData.team || []).slice().sort((a, b) => (a.rank || Infinity) - (b.rank || Infinity));
+  const homepageMembers = new Set(list.slice(0, 3).map((member) => member.id));
   if (list.length === 0) {
     container.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#666;">No team members found. Add your first profile with image card &amp; PDF.</td></tr>`;
     return;
@@ -468,7 +521,7 @@ function renderTeam() {
       <td>
         <div class="title-with-thumb">
           ${thumb}
-          <div><strong>${escapeHtml(m.name)}</strong></div>
+          <div><strong>${escapeHtml(m.name)}</strong>${homepageMembers.has(m.id) ? '<div><span class="status-pill status-available">Homepage</span></div>' : ""}</div>
         </div>
       </td>
       <td><span class="status-pill status-new">${escapeHtml(m.role || "")}</span></td>
@@ -500,6 +553,7 @@ function openTeamModal(id = null) {
   document.getElementById("team-modal-id").value = id || "";
   document.getElementById("team-image").value = "";
   document.getElementById("team-pdf").value = "";
+  document.getElementById("team-reportsTo").innerHTML = '<option value="">Board / owner or unassigned</option>' + (appData.team || []).filter((member) => member.id !== id).map((member) => `<option value="${escapeHtml(member.id)}">${escapeHtml(member.name)} - ${escapeHtml(member.role)}</option>`).join("");
 
   let existingImage = "";
   let existingPdf = "";
@@ -510,6 +564,9 @@ function openTeamModal(id = null) {
       document.getElementById("team-modal-title").textContent = "Edit Team Member";
       document.getElementById("team-name").value = item.name;
       document.getElementById("team-role").value = item.role;
+      document.getElementById("team-rank").value = item.rank || "";
+      document.getElementById("team-level").value = item.level || "";
+      document.getElementById("team-reportsTo").value = item.reportsTo || "";
       document.getElementById("team-bio").value = item.bio;
       existingImage = item.image || "";
       // Determine if stored as base64 pdf or a URL like /documents/...
@@ -526,6 +583,7 @@ function openTeamModal(id = null) {
   }
 
   // --- Image card uploader (existing pattern) ---
+  document.getElementById("team-image").value = existingImage;
   setupImageUploader(
     modal.querySelector(".image-uploader"),
     existingImage,
@@ -654,6 +712,9 @@ async function handleTeamSubmit(e) {
   const payload = {
     name: document.getElementById("team-name").value.trim(),
     role: document.getElementById("team-role").value.trim(),
+    rank: Number(document.getElementById("team-rank").value) || null,
+    level: document.getElementById("team-level").value,
+    reportsTo: document.getElementById("team-reportsTo").value,
     bio: document.getElementById("team-bio").value.trim(),
     image: document.getElementById("team-image").value || "",
     pdf: pdfVal,
@@ -813,12 +874,17 @@ function fileToDataURL(file) {
 
 function setupImageUploader(uploaderEl, initialValue, onChange) {
   if (!uploaderEl) return;
+  // Reopening a modal or refreshing data must not register duplicate actions.
+  uploaderEl.uploadController?.abort();
+  const controller = new AbortController();
+  uploaderEl.uploadController = controller;
+  const listenerOptions = { signal: controller.signal };
   const preview = uploaderEl.querySelector("[data-preview]");
   const input = uploaderEl.querySelector("[data-input]");
   const browseBtn = uploaderEl.querySelector("[data-browse]");
   const clearBtn = uploaderEl.querySelector("[data-clear]");
 
-  function applyPreview(src) {
+  function applyPreview(src, animate = false) {
     if (!preview) return;
     if (src && typeof src === "string") {
       preview.style.backgroundImage = `url('${src}')`;
@@ -829,6 +895,10 @@ function setupImageUploader(uploaderEl, initialValue, onChange) {
       preview.classList.remove("has-image");
       preview.classList.add("is-empty");
     }
+    if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      preview.getAnimations().forEach((animation) => animation.cancel());
+      preview.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 220, easing: "ease-out" });
+    }
   }
 
   applyPreview(initialValue || "");
@@ -837,30 +907,30 @@ function setupImageUploader(uploaderEl, initialValue, onChange) {
     browseBtn.addEventListener("click", (e) => {
       e.preventDefault();
       input.click();
-    });
+    }, listenerOptions);
   }
 
   if (preview) {
     preview.classList.add("is-empty");
     if (initialValue) preview.classList.remove("is-empty");
     preview.style.cursor = "pointer";
-    preview.addEventListener("click", () => { if (input) input.click(); });
+    preview.addEventListener("click", () => { if (input) input.click(); }, listenerOptions);
     preview.addEventListener("dragover", (e) => {
       e.preventDefault();
       uploaderEl.classList.add("is-dragging");
-    });
-    preview.addEventListener("dragleave", () => uploaderEl.classList.remove("is-dragging"));
+    }, listenerOptions);
+    preview.addEventListener("dragleave", () => uploaderEl.classList.remove("is-dragging"), listenerOptions);
     preview.addEventListener("drop", async (e) => {
       e.preventDefault();
       uploaderEl.classList.remove("is-dragging");
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
         try {
           const dataUrl = await fileToDataURL(e.dataTransfer.files[0]);
-          applyPreview(dataUrl);
+          applyPreview(dataUrl, true);
           if (onChange) onChange(dataUrl);
         } catch (err) { showToast(err.message, "error"); }
       }
-    });
+    }, listenerOptions);
   }
 
   if (input) {
@@ -868,20 +938,20 @@ function setupImageUploader(uploaderEl, initialValue, onChange) {
       const f = input.files && input.files[0];
       try {
         const dataUrl = await fileToDataURL(f);
-        applyPreview(dataUrl);
+        applyPreview(dataUrl, true);
         if (onChange) onChange(dataUrl);
       } catch (err) { showToast(err.message, "error"); }
       // reset so same file can be re-selected
       input.value = "";
-    });
+    }, listenerOptions);
   }
 
   if (clearBtn) {
     clearBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      applyPreview("");
+      applyPreview("", true);
       if (onChange) onChange("");
-    });
+    }, listenerOptions);
   }
 }
 
@@ -1011,11 +1081,12 @@ function switchTab(tabId) {
   const titleMap = {
     overview: "Dashboard Overview",
     settings: "Site & Admin Settings",
+    pages: "Website Pages",
     images: "Website Images Manager",
     documents: "Documents & PDFs Manager",
     properties: "Property Listings Manager",
     services: "Services Manager",
-    team: "Team Profiles & Image Cards Manager",
+    team: "Administration Profiles",
     submissions: "Client Enquiries",
   };
   document.getElementById("current-page-title").textContent = titleMap[tabId] || "Dashboard";
@@ -1047,6 +1118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("login-form").addEventListener("submit", handleLogin);
   document.getElementById("logout-btn").addEventListener("click", handleLogout);
   document.getElementById("settings-form").addEventListener("submit", handleSaveSettings);
+  document.getElementById("pages-form").addEventListener("submit", handleSavePages);
   document.getElementById("property-form").addEventListener("submit", handlePropertySubmit);
   document.getElementById("service-form").addEventListener("submit", handleServiceSubmit);
   document.getElementById("team-form").addEventListener("submit", handleTeamSubmit);

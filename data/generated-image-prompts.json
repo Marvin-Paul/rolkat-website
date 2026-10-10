@@ -1,0 +1,26 @@
+{
+  "generator": "Built-in image generation",
+  "illustrative": true,
+  "assets": [
+    {
+      "file": "wp-content/themes/rolkat/assets/images/property-villa-illustration.png",
+      "prompt": "A photorealistic architectural illustration of a contemporary four-bedroom Ugandan residential villa in Kampala, complete exterior in frame, landscaped green compound, perimeter wall, bright natural daylight, realistic construction, professional real estate photography, landscape 4:3. No people, text, logos, watermarks. Concept imagery, not a specific actual property."
+    },
+    {
+      "file": "wp-content/themes/rolkat/assets/images/property-office-illustration.png",
+      "prompt": "A photorealistic architectural illustration of a modern commercial office suite in Kampala, spacious bright clean workspace with desks, large windows and subtle city view, natural daylight, professional real estate interior photography, landscape 4:3. No people, text, logos, watermarks. Concept imagery, not a specific actual property."
+    },
+    {
+      "file": "wp-content/themes/rolkat/assets/images/property-land-illustration.png",
+      "prompt": "A photorealistic architectural illustration of an empty residential building plot in Wakiso Uganda, green grass, red earth access road, modest neighbouring homes, tropical trees, entire open plot clearly visible, bright natural daylight, professional real estate photography, landscape 4:3. No people, signs, text, logos, watermarks. Concept imagery, not a specific actual property."
+    },
+    {
+      "file": "wp-content/themes/rolkat/assets/images/property-waterfront-illustration.png",
+      "prompt": "A photorealistic architectural illustration of a grassy waterfront residential building plot near Entebbe Uganda, Lake Victoria clearly visible beyond gentle green slope, tropical trees and open sky, natural daytime photography, realistic approachable land setting, landscape 4:3. No buildings on the plot, people, signs, text, logos, watermarks. Concept imagery, not a specific actual property."
+    },
+    {
+      "file": "wp-content/themes/rolkat/assets/images/property-apartment-illustration.png",
+      "prompt": "A photorealistic architectural illustration of a furnished Ugandan apartment living room in Zana, tasteful sofa, coffee table, dining nook, large bright windows, practical modern furnishings, natural daylight, professional real estate interior photography, landscape 4:3. No people, text, logos, watermarks. Concept imagery, not a specific actual property."
+    }
+  ]
+}

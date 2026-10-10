@@ -20,12 +20,34 @@
       "term": 1
     },
     "adminUsername": "admin",
-    "adminPassword": "rolkat2026"
+    "adminPassword": "rolkat2026",
+    "pages": {
+      "loans": {
+        "title": "Loans that work with your earning cycle.",
+        "introduction": "Fast, fair and flexible credit built for everyday Ugandans. 24-hour approval with respectful collection and clear, UMRA-compliant terms."
+      },
+      "property-management": {
+        "title": "Professional property care for landlords, near and far.",
+        "introduction": "Tenant vetting, disciplined rent collection, maintenance coordination and transparent monthly reports for local and diaspora landlords."
+      },
+      "real-estate": {
+        "title": "Land, homes and commercial space",
+        "introduction": "Professional listing, verified titles and due diligence so buyers and sellers can transact with confidence across all Ugandan land tenures."
+      },
+      "administration": {
+        "title": "Administration hierarchy",
+        "introduction": "Rolkat Financial Services SMC Ltd. Serving you better."
+      }
+    }
   },
   "images": {
-    "heroSlide1": "",
-    "heroSlide2": "",
-    "heroSlide3": "",
+    "siteLogo": "/assets/images/rfs-logo.svg",
+    "loansCard": "/assets/images/service-loans.jpeg",
+    "propertyManagementCard": "/assets/images/service-property-management.jpeg",
+    "realEstateCard": "/assets/images/service-real-estate.jpeg",
+    "heroSlide1": "/assets/images/homepage-slide-1.jpg",
+    "heroSlide2": "/assets/images/homepage-slide-2.jpg",
+    "heroSlide3": "/assets/images/homepage-slide-3.jpg",
     "aboutSplitPanel": "",
     "ctaBanner": ""
   },
@@ -118,6 +140,8 @@
   "properties": [
     {
       "id": "prop-1",
+      "image": "/assets/images/property-villa-illustration.png",
+      "imageIsIllustration": true,
       "title": "Modern Residential Villa",
       "location": "Kololo, Kampala",
       "price": "UGX 850,000,000",
@@ -127,6 +151,8 @@
     },
     {
       "id": "prop-2",
+      "image": "/assets/images/property-office-illustration.png",
+      "imageIsIllustration": true,
       "title": "Prime Commercial Office Space",
       "location": "Nakasero, Kampala",
       "price": "UGX 3,500,000 / mo",
@@ -136,6 +162,8 @@
     },
     {
       "id": "prop-3",
+      "image": "/assets/images/property-land-illustration.png",
+      "imageIsIllustration": true,
       "title": "Residential Land Opportunity",
       "location": "Kira Municipality, Wakiso",
       "price": "UGX 120,000,000",
@@ -145,6 +173,8 @@
     },
     {
       "id": "prop-4",
+      "image": "/assets/images/property-waterfront-illustration.png",
+      "imageIsIllustration": true,
       "title": "Waterfront Plot - Entebbe",
       "location": "Entebbe, Wakiso",
       "price": "UGX 250,000,000",
@@ -154,6 +184,8 @@
     },
     {
       "id": "prop-5",
+      "image": "/assets/images/property-apartment-illustration.png",
+      "imageIsIllustration": true,
       "title": "Furnished Apartment - Zana",
       "location": "Zana, Entebbe Road",
       "price": "UGX 1,800,000 / mo",
@@ -166,20 +198,129 @@
     {
       "id": "team-1",
       "name": "Katongole James",
-      "role": "Managing Director",
-      "bio": "Founder leading strategy, regulatory compliance, credit approvals, and customer-first service delivery."
+      "image": "/assets/images/katongole-james.jpg",
+      "role": "Chief Executive Officer",
+      "bio": "",
+      "rank": 1,
+      "level": "Executive",
+      "reportsTo": ""
     },
     {
       "id": "team-2",
-      "name": "Sarah Namukasa",
-      "role": "Head of Property Management",
-      "bio": "Specializes in tenancy administration, landlord relations, routine inspections, and property maintenance."
+      "name": "Nakirijja Ruth",
+      "image": "/assets/images/nakirijja-ruth.jpg",
+      "role": "General Manager",
+      "bio": "",
+      "rank": 2,
+      "level": "Executive",
+      "reportsTo": "team-1"
     },
     {
       "id": "team-3",
-      "name": "David Ochieng",
-      "role": "Senior Real Estate Consultant",
-      "bio": "Expert in property valuation, title search due diligence, land acquisition, and conveyance."
+      "name": "Karungi Micheal",
+      "image": "/assets/images/karungi-micheal.jpg",
+      "role": "Credit Manager",
+      "bio": "",
+      "rank": 3,
+      "level": "Manager",
+      "reportsTo": "team-2"
+    },
+    {
+      "id": "team-4",
+      "rank": 4,
+      "name": "Tusingwire Juliana",
+      "image": "/assets/images/tusingwire-juliana.jpg",
+      "role": "Assistant Credit Manager and Administrator",
+      "level": "Credit team",
+      "reportsTo": "team-3",
+      "bio": ""
+    },
+    {
+      "id": "team-5",
+      "rank": 5,
+      "name": "Ndagire Marion Masanje",
+      "image": "/assets/images/ndagire-marion-masanje.jpg",
+      "role": "Secretary",
+      "level": "Support",
+      "reportsTo": "team-2",
+      "bio": ""
+    },
+    {
+      "id": "team-6",
+      "rank": 6,
+      "name": "Bukenya Ibra",
+      "image": "/assets/images/bukenya-ibra.jpg",
+      "role": "Boda Boda Manager",
+      "level": "Manager",
+      "reportsTo": "team-2",
+      "bio": ""
+    },
+    {
+      "id": "team-7",
+      "rank": 7,
+      "name": "Ssempala Musa",
+      "role": "Recovery Manager",
+      "level": "Manager",
+      "reportsTo": "team-2",
+      "bio": ""
+    },
+    {
+      "id": "team-8",
+      "rank": 8,
+      "name": "Mpagi Bruno",
+      "image": "/assets/images/mpagi-bruno.jpg",
+      "role": "Credit Officer",
+      "level": "Credit team",
+      "reportsTo": "team-3",
+      "bio": ""
+    },
+    {
+      "id": "team-9",
+      "rank": 9,
+      "name": "Ssenyondo Joseph",
+      "role": "Credit Officer",
+      "level": "Credit team",
+      "reportsTo": "team-3",
+      "bio": ""
+    },
+    {
+      "id": "team-10",
+      "rank": 10,
+      "name": "Nakyanja Immaculate",
+      "image": "/assets/images/nakyanja-immaculate.jpg",
+      "role": "Administrator",
+      "level": "Administration",
+      "reportsTo": "team-5",
+      "bio": ""
+    },
+    {
+      "id": "team-11",
+      "rank": 11,
+      "name": "Hajjemba Shirat",
+      "image": "/assets/images/hajjemba-shirat.jpg",
+      "role": "Administrator",
+      "level": "Administration",
+      "reportsTo": "team-5",
+      "bio": ""
+    },
+    {
+      "id": "team-12",
+      "rank": 12,
+      "name": "Nagujja Madrine",
+      "role": "Administrator",
+      "level": "Administration",
+      "reportsTo": "team-5",
+      "bio": ""
+    },
+    {
+      "id": "team-13",
+      "rank": 13,
+      "name": "Zalwango Vanessa",
+      "image": "/assets/images/zalwango-vanessa.jpg",
+      "role": "Administrator",
+      "level": "Administration",
+      "reportsTo": "team-5",
+      "bio": ""
     }
   ],
   "submissions": [
@@ -214,6 +355,17 @@
       "subject": "Loans",
       "service": "Loans",
       "message": "Full implementation check",
+      "status": "New"
+    },
+    {
+      "id": "sub-1791645134691",
+      "date": "2026-10-10T15:12:14.691Z",
+      "name": "muwereza",
+      "email": "marvin@gmail.com",
+      "phone": "0781384004",
+      "subject": "Loans",
+      "service": "Loans",
+      "message": "i need money",
       "status": "New"
     }
   ]

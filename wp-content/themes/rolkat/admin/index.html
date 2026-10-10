@@ -12,7 +12,7 @@
 <div id="login-screen" class="login-screen" style="display: none;">
   <div class="login-card">
     <div class="login-brand">
-      <div class="brand-badge">R</div>
+      <img class="admin-brand-logo" src="/assets/images/rfs-logo.svg" alt="ROLKAT logo" width="64" height="56">
       <div>
         <div class="brand-title">ROLKAT Financial</div>
         <div class="brand-subtitle">Site Management & Admin</div>
@@ -56,7 +56,7 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar">
     <div class="sidebar-header">
-      <div class="brand-badge">R</div>
+      <img class="admin-brand-logo" src="/assets/images/rfs-logo.svg" alt="ROLKAT logo" width="64" height="56">
       <div>
         <div class="brand-title">ROLKAT CMS</div>
         <div class="brand-subtitle">Admin Portal</div>
@@ -69,6 +69,9 @@
       </button>
       <button class="nav-item" data-tab="settings">
         <i data-lucide="sliders"></i> Site Settings
+      </button>
+      <button class="nav-item" data-tab="pages">
+        <i data-lucide="files"></i> Website Pages
       </button>
       <button class="nav-item" data-tab="images">
         <i data-lucide="image"></i> Images & Media
@@ -83,7 +86,7 @@
         <i data-lucide="briefcase"></i> Services
       </button>
       <button class="nav-item" data-tab="team">
-        <i data-lucide="users"></i> Team
+        <i data-lucide="users"></i> Administration
       </button>
       <button class="nav-item" data-tab="submissions">
         <i data-lucide="inbox"></i> Enquiries <span class="badge" id="badge-enquiries"></span>
@@ -121,6 +124,14 @@
     </header>
 
     <div class="content-body">
+      <section id="tab-pages" class="tab-pane">
+        <form id="pages-form">
+          <div class="content-card">
+            <div class="card-header"><h3>Website Pages</h3><button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Pages</button></div>
+            <div id="page-fields" class="card-body"></div>
+          </div>
+        </form>
+      </section>
       <!-- 1. Overview Tab -->
       <section id="tab-overview" class="tab-pane active">
         <div class="stats-grid">
@@ -142,7 +153,7 @@
             <div class="stat-icon"><i data-lucide="users"></i></div>
             <div>
               <div class="stat-value" id="stat-team">0</div>
-              <div class="stat-label">Team Profiles</div>
+              <div class="stat-label">Administration Profiles</div>
             </div>
           </div>
           <div class="stat-card">
@@ -320,12 +331,61 @@
       <section id="tab-images" class="tab-pane">
         <form id="images-form" onsubmit="return false;">
           <div class="content-card">
+            <div class="card-header"><h3>Branding &amp; Service Card Images</h3></div>
+            <div class="card-body"><div class="form-grid">
+              <div class="form-group">
+                <label>Website Logo</label>
+                <div class="image-uploader" data-key="siteLogo">
+                  <div class="image-preview" data-preview></div>
+                  <input type="file" accept="image/*" data-input style="display:none;">
+                  <div class="image-uploader-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Loans Card</label>
+                <div class="image-uploader" data-key="loansCard">
+                  <div class="image-preview" data-preview></div>
+                  <input type="file" accept="image/*" data-input style="display:none;">
+                  <div class="image-uploader-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Property Management Card</label>
+                <div class="image-uploader" data-key="propertyManagementCard">
+                  <div class="image-preview" data-preview></div>
+                  <input type="file" accept="image/*" data-input style="display:none;">
+                  <div class="image-uploader-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Real Estate Card</label>
+                <div class="image-uploader" data-key="realEstateCard">
+                  <div class="image-preview" data-preview></div>
+                  <input type="file" accept="image/*" data-input style="display:none;">
+                  <div class="image-uploader-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                  </div>
+                </div>
+              </div>
+            </div></div>
+          </div>
+          <div class="content-card">
             <div class="card-header">
               <h3>Homepage Hero Slider Backgrounds</h3>
               <p style="font-size:13px;color:var(--muted);margin:0;">Upload 3 images that will slide left-to-right in the hero section. Recommended size: 1920 × 1080 px.</p>
             </div>
             <div class="card-body">
-              <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px;">
+              <div class="form-grid form-grid--three">
                 <div class="form-group">
                   <label for="img-heroSlide1">Hero Slide 1 (first shown)</label>
                   <div class="image-uploader" data-key="heroSlide1">
@@ -372,7 +432,7 @@
               <p style="font-size:13px;color:var(--muted);margin:0;">Map images to other homepage sections. Uploads are saved automatically.</p>
             </div>
             <div class="card-body">
-              <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px;">
+              <div class="form-grid form-grid--two">
                 <div class="form-group">
                   <label>About Panel Background</label>
                   <div class="image-uploader" data-key="aboutSplitPanel">
@@ -619,6 +679,7 @@
             <div class="hint">Optional. Will be shown as the property card's cover image. Recommended 4:3 ratio.</div>
           </div>
           <input type="hidden" id="prop-image" value="">
+          <label><input type="checkbox" id="prop-image-illustration"> Generated / illustrative image</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -646,6 +707,14 @@
         <div class="form-group">
           <label for="serv-title">Service Title</label>
           <input type="text" id="serv-title" required placeholder="e.g. Loans">
+        </div>
+        <div class="form-group">
+          <label for="serv-category">Service Page</label>
+          <select id="serv-category" required>
+            <option value="loans">Loans</option>
+            <option value="property-management">Property Management</option>
+            <option value="real-estate">Real Estate</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="serv-description">Description</label>
@@ -678,6 +747,9 @@
           <label for="team-role">Role / Position</label>
           <input type="text" id="team-role" required placeholder="e.g. Managing Director">
         </div>
+        <div class="form-group"><label for="team-rank">Staff Rank</label><input type="number" id="team-rank" min="1" step="1"></div>
+        <div class="form-group"><label for="team-level">Level</label><select id="team-level"><option value="">Unassigned</option><option>Executive</option><option>Manager</option><option>Credit team</option><option>Support</option><option>Administration</option></select></div>
+        <div class="form-group"><label for="team-reportsTo">Reports To (inferred)</label><select id="team-reportsTo"></select></div>
         <div class="form-group">
           <label for="team-bio">Short Biography</label>
           <textarea id="team-bio" rows="3" placeholder="Brief professional background..."></textarea>
@@ -691,7 +763,7 @@
               <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose photo</button>
               <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
             </div>
-            <div class="hint">Used as the image card displayed on the public "Our Team" section. Recommended 4:3 ratio portrait.</div>
+            <div class="hint">Full portrait on the homepage for the first three ranked members; all members appear on Administration.</div>
           </div>
           <input type="hidden" id="team-image" value="">
         </div>

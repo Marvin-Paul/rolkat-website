@@ -1,4 +1,5 @@
 const { createServer } = require("node:http");
+const { pages, renderPage } = require("./page-renderer");
 const { readFile, writeFile } = require("node:fs/promises");
 const { existsSync } = require("node:fs");
 const path = require("node:path");
@@ -436,10 +437,12 @@ const server = createServer(async (request, response) => {
 
   // --- Static Files ---
   // Predefined static routes (high-priority)
-  const route = staticRoutes.get(pathname);
+  const pagePath = pathname.replace(/\/$/, "") || "/";
+  const route = pages[pagePath] ? ["preview.html", "text/html; charset=utf-8"] : staticRoutes.get(pathname);
   if (route) {
     try {
-      const body = await readFile(path.join(root, route[0]));
+      const file = await readFile(path.join(root, route[0]));
+      const body = route[0] === "preview.html" ? renderPage(file.toString("utf8"), pagePath) : file;
       response.writeHead(200, {
         "Content-Type": route[1],
         "Cache-Control": "no-store",
@@ -458,7 +461,7 @@ const server = createServer(async (request, response) => {
   // Dynamic static assets (images, SVG, etc. under /assets/)
   if (pathname.startsWith("/assets/") || pathname.startsWith("/admin/")) {
     // Prevent path traversal
-    const normalized = path.normalize(pathname).replace(/^(\.\.(\/|\\|$))+/, "");
+    const normalized = path.normalize(pathname).replace(/\\/g, "/").replace(/^(\.\.(\/|\\|$))+/, "");
     if (normalized.startsWith("/assets/") || normalized.startsWith("/admin/")) {
       try {
         const filePath = path.join(root, normalized.slice(1));
