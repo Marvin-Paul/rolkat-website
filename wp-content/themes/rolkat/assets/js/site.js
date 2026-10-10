@@ -640,7 +640,7 @@
     if (!slides.length || slides.length < 3) return;
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const AUTO_INTERVAL = 6500;
+    const AUTO_INTERVAL = 3000;
     let current = 0;
     let timer = null;
     let locked = false;
