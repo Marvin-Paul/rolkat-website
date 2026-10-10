@@ -1,8 +1,10 @@
 const { createServer } = require("node:http");
 const { readFile, writeFile } = require("node:fs/promises");
+const { existsSync } = require("node:fs");
 const path = require("node:path");
 
 const root = path.join(__dirname, "wp-content", "themes", "rolkat");
+const projectRoot = __dirname;
 const dataFilePath = path.join(__dirname, "data", "site-data.json");
 
 // Helper: load JSON data from disk
@@ -75,6 +77,26 @@ function isAuthorized(req) {
   return activeSessions.has(token);
 }
 
+const MIME_BY_EXT = new Map([
+  [".html", "text/html; charset=utf-8"],
+  [".css", "text/css; charset=utf-8"],
+  [".js", "text/javascript; charset=utf-8"],
+  [".json", "application/json; charset=utf-8"],
+  [".svg", "image/svg+xml"],
+  [".png", "image/png"],
+  [".jpg", "image/jpeg"],
+  [".jpeg", "image/jpeg"],
+  [".gif", "image/gif"],
+  [".webp", "image/webp"],
+  [".ico", "image/x-icon"],
+  [".pdf", "application/pdf"],
+]);
+
+function mimeFor(p) {
+  const ext = path.extname(p).toLowerCase();
+  return MIME_BY_EXT.get(ext) || "application/octet-stream";
+}
+
 // Routes mapping for static files
 const staticRoutes = new Map([
   ["/", ["preview.html", "text/html; charset=utf-8"]],
@@ -117,11 +139,25 @@ const server = createServer(async (request, response) => {
     const data = await loadData();
     const publicSettings = { ...data.settings };
     delete publicSettings.adminPassword; // hide credentials
+
+    // List known available public documents (PDFs in project root)
+    const knownDocs = [
+      { slug: "admin-hierarchy", label: "Administration Hierarchy", file: "Rolkat_Administration_Hierarchy.pdf" },
+      { slug: "company-profile", label: "Company Profile (Detailed)", file: "Rolkat_Company_Profile_Detailed.pdf" },
+      { slug: "website-srs", label: "Website Specification (SRS)", file: "Rolkat_Website_SRS.pdf" },
+      { slug: "project-proposal", label: "Dynamic Website Proposal", file: "Mariz_Proposal_Rolkat_Financial_Services_Dynamic_Website (1).pdf" },
+    ];
+    const documents = knownDocs
+      .filter((d) => existsSync(path.join(projectRoot, d.file)))
+      .map((d) => ({ ...d, url: `/documents/${encodeURIComponent(d.file)}` }));
+
     sendJson(response, 200, {
       settings: publicSettings,
+      images: data.images || {},
       services: data.services || [],
       properties: data.properties || [],
       team: data.team || [],
+      documents,
     });
     return;
   }
@@ -202,7 +238,20 @@ const server = createServer(async (request, response) => {
 
     // GET /api/admin/data
     if (pathname === "/api/admin/data" && method === "GET") {
-      sendJson(response, 200, data);
+      if (!data.images) data.images = {};
+
+      // Attach known documents list (same as public content API)
+      const knownDocs = [
+        { slug: "admin-hierarchy", label: "Administration Hierarchy", file: "Rolkat_Administration_Hierarchy.pdf" },
+        { slug: "company-profile", label: "Company Profile (Detailed)", file: "Rolkat_Company_Profile_Detailed.pdf" },
+        { slug: "website-srs", label: "Website Specification (SRS)", file: "Rolkat_Website_SRS.pdf" },
+        { slug: "project-proposal", label: "Dynamic Website Proposal", file: "Mariz_Proposal_Rolkat_Financial_Services_Dynamic_Website (1).pdf" },
+      ];
+      const documents = knownDocs
+        .filter((d) => existsSync(path.join(projectRoot, d.file)))
+        .map((d) => ({ ...d, url: `/documents/${encodeURIComponent(d.file)}` }));
+
+      sendJson(response, 200, { ...data, documents });
       return;
     }
 
@@ -218,6 +267,28 @@ const server = createServer(async (request, response) => {
         };
         await saveData(data);
         sendJson(response, 200, { success: true });
+      } catch (err) {
+        sendJson(response, 500, { error: err.message });
+      }
+      return;
+    }
+
+    // PUT /api/admin/images — save the whole images map (heroSlide1..3, aboutSplitPanel, ctaBanner, etc.)
+    if (pathname === "/api/admin/images" && method === "PUT") {
+      try {
+        const payload = await parseJsonBody(request);
+        if (!data.images) data.images = {};
+        data.images = {
+          ...data.images,
+          ...payload,
+        };
+        Object.keys(data.images).forEach((k) => {
+          if (data.images[k] === null || data.images[k] === undefined) {
+            data.images[k] = "";
+          }
+        });
+        await saveData(data);
+        sendJson(response, 200, { success: true, images: data.images });
       } catch (err) {
         sendJson(response, 500, { error: err.message });
       }
@@ -364,26 +435,77 @@ const server = createServer(async (request, response) => {
   }
 
   // --- Static Files ---
+  // Predefined static routes (high-priority)
   const route = staticRoutes.get(pathname);
-  if (!route) {
-    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-    response.end("Not found");
-    return;
+  if (route) {
+    try {
+      const body = await readFile(path.join(root, route[0]));
+      response.writeHead(200, {
+        "Content-Type": route[1],
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
+      });
+      response.end(body);
+      return;
+    } catch (error) {
+      console.error(`Failed to serve ${route[0]}:`, error);
+      response.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+      response.end("File could not be loaded");
+      return;
+    }
   }
 
-  try {
-    const body = await readFile(path.join(root, route[0]));
-    response.writeHead(200, {
-      "Content-Type": route[1],
-      "Cache-Control": "no-store",
-      "X-Content-Type-Options": "nosniff",
-    });
-    response.end(body);
-  } catch (error) {
-    console.error(`Failed to serve ${route[0]}:`, error);
-    response.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
-    response.end("File could not be loaded");
+  // Dynamic static assets (images, SVG, etc. under /assets/)
+  if (pathname.startsWith("/assets/") || pathname.startsWith("/admin/")) {
+    // Prevent path traversal
+    const normalized = path.normalize(pathname).replace(/^(\.\.(\/|\\|$))+/, "");
+    if (normalized.startsWith("/assets/") || normalized.startsWith("/admin/")) {
+      try {
+        const filePath = path.join(root, normalized.slice(1));
+        const body = await readFile(filePath);
+        response.writeHead(200, {
+          "Content-Type": mimeFor(filePath),
+          "Cache-Control": "no-store",
+          "X-Content-Type-Options": "nosniff",
+        });
+        response.end(body);
+        return;
+      } catch (_err) {
+        // fall through to 404
+      }
+    }
   }
+
+  // Public Documents (PDFs from project root) — /documents/<filename.pdf>
+  if (pathname.startsWith("/documents/")) {
+    // Normalize and always convert to forward slashes (works on Windows too)
+    const normalized = path.normalize(pathname).replace(/\\/g, "/").replace(/^(\.\.(\/|\\|$))+/, "");
+    if (normalized.startsWith("/documents/")) {
+      const fileName = decodeURIComponent(normalized.slice("/documents/".length));
+      // Only allow PDF files
+      if (path.extname(fileName).toLowerCase() === ".pdf") {
+        const filePath = path.join(projectRoot, fileName);
+        try {
+          if (existsSync(filePath)) {
+            const body = await readFile(filePath);
+            response.writeHead(200, {
+              "Content-Type": mimeFor(filePath),
+              "Cache-Control": "no-store",
+              "X-Content-Type-Options": "nosniff",
+              "Content-Disposition": `inline; filename="${path.basename(fileName)}"`,
+            });
+            response.end(body);
+            return;
+          }
+        } catch (_err) {
+          // fall through to 404
+        }
+      }
+    }
+  }
+
+  response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+  response.end("Not found");
 });
 
 const port = Number(process.env.PORT) || 5173;

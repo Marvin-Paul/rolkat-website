@@ -164,11 +164,49 @@
         document.querySelectorAll("#brand-caption, #footer-brand-caption").forEach((el) => (el.textContent = s.tagline));
       }
 
-      // Hero Section
+      // Hero Section Text
       if (s.heroEyebrow) document.getElementById("hero-eyebrow").textContent = s.heroEyebrow;
       if (s.heroTitle) document.getElementById("hero-title").textContent = s.heroTitle;
       if (s.heroText) document.getElementById("hero-text").textContent = s.heroText;
       if (s.tagline) document.getElementById("hero-note").textContent = s.tagline;
+
+      // Hero Background Slider Images (from site-level images object)
+      const imgs = data.images || {};
+      const slideKeys = ["heroSlide1", "heroSlide2", "heroSlide3"];
+      slideKeys.forEach((key, i) => {
+        const slideEl = document.getElementById(`hero-slide-${i}`);
+        if (!slideEl) return;
+        const fallbackClasses = ["hero-slide--fallback-1", "hero-slide--fallback-2", "hero-slide--fallback-3"];
+        if (imgs[key] && typeof imgs[key] === "string" && imgs[key].length > 0) {
+          slideEl.style.backgroundImage = `url("${imgs[key]}")`;
+          fallbackClasses.forEach((c, idx) => {
+            if (idx === i) return;
+            slideEl.classList.remove(c);
+          });
+        } else {
+          slideEl.style.backgroundImage = "";
+          fallbackClasses.forEach((c, idx) => {
+            if (idx === i) slideEl.classList.add(c);
+            else slideEl.classList.remove(c);
+          });
+        }
+      });
+
+      // About split panel image
+      const splitPanel = document.querySelector(".split-panel");
+      if (splitPanel && imgs.aboutSplitPanel) {
+        splitPanel.style.backgroundImage = `linear-gradient(135deg, rgba(11, 31, 58, 0.88), rgba(11, 31, 58, 0.7)), url("${imgs.aboutSplitPanel}")`;
+        splitPanel.style.backgroundSize = "cover";
+        splitPanel.style.backgroundPosition = "center";
+      }
+
+      // CTA banner background overlay image
+      const ctaBand = document.querySelector(".cta-band");
+      if (ctaBand && imgs.ctaBanner) {
+        ctaBand.style.backgroundImage = `linear-gradient(120deg, rgba(11, 31, 58, 0.88) 0%, rgba(26, 51, 88, 0.82) 45%, rgba(240, 78, 35, 0.78) 140%), url("${imgs.ctaBanner}")`;
+        ctaBand.style.backgroundSize = "cover";
+        ctaBand.style.backgroundPosition = "center";
+      }
 
       // Contact Info
       if (s.phone) {
@@ -218,32 +256,20 @@
         servGrid.innerHTML = services.map(cardMarkup).join("\n");
       }
 
-      // Properties Grid with optional filters
+      // Properties RTL Marquee + Grid fallback (optional filters)
       const properties = data.properties || [];
+      const propGroup1 = document.getElementById("prop-marquee-group-1");
+      const propGroup2 = document.getElementById("prop-marquee-group-2");
       const propGrid = document.getElementById("properties-grid");
       const statusFilter = document.getElementById("preview-property-status");
       const typeFilter = document.getElementById("preview-property-type");
 
-      function renderProperties() {
-        if (!propGrid) return;
-        const statusValue = statusFilter ? statusFilter.value : "";
-        const typeValue = typeFilter ? typeFilter.value : "";
-        const filtered = properties.filter((prop) => {
-          const statusOk = !statusValue || prop.status === statusValue;
-          const typeOk = !typeValue || prop.type === typeValue;
-          return statusOk && typeOk;
-        });
-
-        if (filtered.length === 0) {
-          propGrid.innerHTML = `<p class="empty-state">No listings match these filters. Contact our team to discuss your requirements.</p>`;
-          return;
-        }
-
-        propGrid.innerHTML = filtered
-          .map(
-            (prop) => `
-          <article class="property-card">
-            <div class="property-card-placeholder" aria-hidden="true"></div>
+      // Build property card markup (shared by marquee cards and grid fallback)
+      const propCardMarkup = (prop) => {
+        const hasImg = prop.image && typeof prop.image === "string" && prop.image.length > 0;
+        return `
+          <article class="property-card property-card--marquee">
+            <div class="property-card-placeholder${hasImg ? " has-image" : ""}" ${hasImg ? `style="background-image:url('${escape(prop.image)}');"` : ""} aria-hidden="true"></div>
             <div class="property-card-body">
               <div class="property-card-tags">
                 <span class="property-card-status">${escape(prop.status || "Available")}</span>
@@ -258,9 +284,43 @@
               <a class="text-link" href="#contact">Enquire about property</a>
             </div>
           </article>
-        `
-          )
-          .join("");
+        `;
+      };
+
+      function renderProperties() {
+        const statusValue = statusFilter ? statusFilter.value : "";
+        const typeValue = typeFilter ? typeFilter.value : "";
+        const filtered = properties.filter((prop) => {
+          const statusOk = !statusValue || prop.status === statusValue;
+          const typeOk = !typeValue || prop.type === typeValue;
+          return statusOk && typeOk;
+        });
+
+        // Marquee always shows ALL listings (scrolling carousel)
+        const allHtml = properties.length > 0 ? properties.map(propCardMarkup).join("\n") : "";
+        if (propGroup1 && properties.length > 0) {
+          propGroup1.innerHTML = allHtml;
+        }
+        if (propGroup2 && properties.length > 0) {
+          propGroup2.innerHTML = allHtml;
+        }
+
+        // Grid fallback shows filtered results when a filter is active
+        if (propGrid) {
+          const anyFilter = !!statusValue || !!typeValue;
+          if (anyFilter) {
+            propGrid.style.display = "grid";
+            if (filtered.length === 0) {
+              propGrid.innerHTML = `<p class="empty-state" style="grid-column:1/-1;">No listings match these filters. Contact our team to discuss your requirements.</p>`;
+            } else {
+              propGrid.className = "property-grid-fallback is-grid";
+              propGrid.innerHTML = filtered.map(propCardMarkup).join("\n");
+            }
+          } else {
+            propGrid.style.display = "none";
+            propGrid.innerHTML = "";
+          }
+        }
 
         if (window.lucide) {
           window.lucide.createIcons();
@@ -300,22 +360,37 @@
         socialWrap.innerHTML = links.join("");
       }
 
-      // Team Grid
+      // Team Grid - Image cards with optional PDF profile link
       const team = data.team || [];
       const teamGrid = document.getElementById("team-grid");
       if (teamGrid && team.length > 0) {
         teamGrid.innerHTML = team
           .map(
-            (m) => `
-          <article class="team-card">
-            <div class="team-card-placeholder" aria-hidden="true"></div>
-            <div class="property-card-body">
-              <span class="property-card-status" style="color:var(--ink-soft);">${escape(m.role || "Consultant")}</span>
+            (m) => {
+              const hasImg = m.image && typeof m.image === "string" && m.image.length > 0;
+              const hasPdf = m.pdf && typeof m.pdf === "string" && m.pdf.length > 0;
+              // Also support a reference PDF URL field
+              const pdfHref = hasPdf ? m.pdf : (m.pdfUrl || "");
+              const hasAnyPdf = pdfHref && pdfHref.length > 0;
+
+              return `
+          <article class="team-card team-card--image">
+            <div class="team-card-media">
+              <div class="team-card-placeholder${hasImg ? " has-image" : ""}" ${hasImg ? `style="background-image:url('${escape(m.image)}');"` : ""} aria-hidden="true"></div>
+            </div>
+            <div class="team-card-body">
+              <span class="team-card-role">${escape(m.role || "Consultant")}</span>
               <h3>${escape(m.name)}</h3>
               <p style="margin-top:8px;font-size:14px;color:var(--muted);">${escape(m.bio || "")}</p>
+              ${hasAnyPdf ? `
+                <a class="team-card-pdf-link" href="${escape(pdfHref)}" target="_blank" rel="noopener noreferrer" title="Open full profile document">
+                  <i data-lucide="file-text" style="width:14px;height:14px;"></i>
+                  <span>View profile PDF</span>
+                </a>` : ""}
             </div>
           </article>
-        `
+        `;
+            }
           )
           .join("");
       }
@@ -409,6 +484,30 @@
     });
   }
 
+  // Properties RTL Marquee Controls (Right-To-Left carousel)
+  const propMarqueeTrack = document.getElementById("prop-marquee-track");
+  const propMarqueeToggleBtn = document.getElementById("prop-marquee-toggle-btn");
+
+  if (propMarqueeTrack && propMarqueeToggleBtn) {
+    propMarqueeToggleBtn.addEventListener("click", () => {
+      const isPaused = propMarqueeTrack.classList.toggle("is-paused");
+      propMarqueeToggleBtn.setAttribute(
+        "aria-label",
+        isPaused ? "Play moving property cards" : "Pause moving property cards"
+      );
+      propMarqueeToggleBtn.setAttribute(
+        "title",
+        isPaused ? "Play property animation" : "Pause property animation"
+      );
+      propMarqueeToggleBtn.innerHTML = isPaused
+        ? '<i data-lucide="play" id="prop-marquee-toggle-icon" style="width:14px;height:14px;"></i>'
+        : '<i data-lucide="pause" id="prop-marquee-toggle-icon" style="width:14px;height:14px;"></i>';
+      if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+      }
+    });
+  }
+
   // Sticky Header & Back-to-Top Scroll Triggers
   const header = document.querySelector(".site-header");
   const backToTopBtn = document.getElementById("back-to-top");
@@ -466,8 +565,162 @@
 
   initScrollReveals();
 
+  // ================================
+  // HERO CAROUSEL: 3 sliding backgrounds (left -> right swipe)
+  // ================================
+  function initHeroCarousel() {
+    const slides = document.querySelectorAll(".hero-slide");
+    const dots = document.querySelectorAll(".hero-slider-dot");
+    const prevBtn = document.getElementById("hero-slider-prev");
+    const nextBtn = document.getElementById("hero-slider-next");
+    if (!slides.length || slides.length < 3) return;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const AUTO_INTERVAL = 6500;
+    let current = 0;
+    let timer = null;
+    let locked = false;
+
+    function setClasses() {
+      slides.forEach((el, i) => {
+        el.classList.remove("is-current", "is-prev");
+        if (i === current) {
+          el.classList.add("is-current");
+        } else if (
+          (current === 0 && i === slides.length - 1) ||
+          i === current - 1
+        ) {
+          el.classList.add("is-prev");
+        }
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("is-active", i === current);
+        dot.setAttribute("aria-selected", i === current ? "true" : "false");
+      });
+    }
+
+    function goTo(index, direction = 1) {
+      if (locked) return;
+      if (index === current) return;
+      const max = slides.length - 1;
+      let nextIdx = index;
+      if (nextIdx < 0) nextIdx = max;
+      if (nextIdx > max) nextIdx = 0;
+
+      locked = true;
+      current = nextIdx;
+      setClasses();
+
+      const transitionMs = prefersReduced ? 550 : 1250;
+      setTimeout(() => {
+        locked = false;
+      }, transitionMs);
+    }
+
+    function next() {
+      goTo(current + 1, 1);
+    }
+    function prev() {
+      goTo(current - 1, -1);
+    }
+
+    function startAuto() {
+      stopAuto();
+      if (prefersReduced) return;
+      timer = setInterval(next, AUTO_INTERVAL);
+    }
+    function stopAuto() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        stopAuto();
+        prev();
+        startAuto();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        stopAuto();
+        next();
+        startAuto();
+      });
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        stopAuto();
+        const idx = Number(dot.dataset.slideIndex || 0);
+        goTo(idx, idx > current ? 1 : -1);
+        startAuto();
+      });
+    });
+
+    // Pause on hover (desktop)
+    const hero = document.querySelector(".hero");
+    if (hero && !prefersReduced) {
+      hero.addEventListener("mouseenter", stopAuto);
+      hero.addEventListener("mouseleave", startAuto);
+    }
+
+    // Touch swipe support (mobile)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touching = false;
+    if (hero) {
+      hero.addEventListener(
+        "touchstart",
+        (e) => {
+          const t = e.touches[0];
+          touchStartX = t.clientX;
+          touchStartY = t.clientY;
+          touching = true;
+          stopAuto();
+        },
+        { passive: true }
+      );
+      hero.addEventListener(
+        "touchend",
+        (e) => {
+          if (!touching) return;
+          touching = false;
+          const t = e.changedTouches[0];
+          const dx = t.clientX - touchStartX;
+          const dy = t.clientY - touchStartY;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+            if (dx < 0) next();
+            else prev();
+          }
+          startAuto();
+        },
+        { passive: true }
+      );
+    }
+
+    // Keyboard accessibility
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" && document.activeElement?.closest(".hero")) {
+        stopAuto();
+        prev();
+        startAuto();
+      } else if (e.key === "ArrowRight" && document.activeElement?.closest(".hero")) {
+        stopAuto();
+        next();
+        startAuto();
+      }
+    });
+
+    setClasses();
+    startAuto();
+  }
+
   // Run on load
   loadSiteContent().then(() => {
     initScrollReveals();
+    initHeroCarousel();
   });
 })();

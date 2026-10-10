@@ -70,6 +70,12 @@
       <button class="nav-item" data-tab="settings">
         <i data-lucide="sliders"></i> Site Settings
       </button>
+      <button class="nav-item" data-tab="images">
+        <i data-lucide="image"></i> Images & Media
+      </button>
+      <button class="nav-item" data-tab="documents">
+        <i data-lucide="file-text"></i> Documents &amp; PDFs <span class="badge" id="badge-documents"></span>
+      </button>
       <button class="nav-item" data-tab="properties">
         <i data-lucide="building-2"></i> Properties
       </button>
@@ -310,6 +316,131 @@
         </form>
       </section>
 
+      <!-- 2b. Images Tab -->
+      <section id="tab-images" class="tab-pane">
+        <form id="images-form" onsubmit="return false;">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Homepage Hero Slider Backgrounds</h3>
+              <p style="font-size:13px;color:var(--muted);margin:0;">Upload 3 images that will slide left-to-right in the hero section. Recommended size: 1920 × 1080 px.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px;">
+                <div class="form-group">
+                  <label for="img-heroSlide1">Hero Slide 1 (first shown)</label>
+                  <div class="image-uploader" data-key="heroSlide1">
+                    <div class="image-preview" data-preview></div>
+                    <input type="file" accept="image/*" data-input style="display:none;">
+                    <div class="image-uploader-actions">
+                      <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                      <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                    </div>
+                    <div class="hint">JPG, PNG or WebP. Auto-saved on upload.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="img-heroSlide2">Hero Slide 2</label>
+                  <div class="image-uploader" data-key="heroSlide2">
+                    <div class="image-preview" data-preview></div>
+                    <input type="file" accept="image/*" data-input style="display:none;">
+                    <div class="image-uploader-actions">
+                      <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                      <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                    </div>
+                    <div class="hint">JPG, PNG or WebP. Auto-saved on upload.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="img-heroSlide3">Hero Slide 3</label>
+                  <div class="image-uploader" data-key="heroSlide3">
+                    <div class="image-preview" data-preview></div>
+                    <input type="file" accept="image/*" data-input style="display:none;">
+                    <div class="image-uploader-actions">
+                      <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                      <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                    </div>
+                    <div class="hint">JPG, PNG or WebP. Auto-saved on upload.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Other Section Images</h3>
+              <p style="font-size:13px;color:var(--muted);margin:0;">Map images to other homepage sections. Uploads are saved automatically.</p>
+            </div>
+            <div class="card-body">
+              <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px;">
+                <div class="form-group">
+                  <label>About Panel Background</label>
+                  <div class="image-uploader" data-key="aboutSplitPanel">
+                    <div class="image-preview" data-preview></div>
+                    <input type="file" accept="image/*" data-input style="display:none;">
+                    <div class="image-uploader-actions">
+                      <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                      <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                    </div>
+                    <div class="hint">Optional background for the About split panel box.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>CTA Banner Background</label>
+                  <div class="image-uploader" data-key="ctaBanner">
+                    <div class="image-preview" data-preview></div>
+                    <input type="file" accept="image/*" data-input style="display:none;">
+                    <div class="image-uploader-actions">
+                      <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+                      <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+                    </div>
+                    <div class="hint">Optional background for the final CTA band near the footer.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- 2c. Documents & PDFs Tab -->
+      <section id="tab-documents" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><i data-lucide="file-text" style="width:18px;height:18px;color:var(--admin-primary);"></i> Company Documents &amp; PDF Files</h3>
+            <p style="font-size:13px;color:var(--muted);margin:0;">Documents uploaded to the project root. Use the links below to preview or assign to team members.</p>
+          </div>
+          <div class="card-body" id="documents-list-body">
+            <div class="empty-state-inline"><i data-lucide="loader-2" style="animation:spin 1s linear infinite;"></i> Loading available documents…</div>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3><i data-lucide="book-open" style="width:18px;height:18px;color:var(--admin-primary);"></i> Team Profile PDF Assignments</h3>
+            <p style="font-size:13px;color:var(--muted);margin:0;">Each team member can have a profile PDF. Use the Team edit modal to upload custom PDFs or pick from the company documents above.</p>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Team Member</th>
+                    <th>Role</th>
+                    <th>Image Card</th>
+                    <th>Profile PDF</th>
+                    <th>Quick Action</th>
+                  </tr>
+                </thead>
+                <tbody id="team-doc-assign-table">
+                  <tr><td colspan="5" style="text-align:center;color:#999;">Loading assignments…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- 3. Properties Tab -->
       <section id="tab-properties" class="tab-pane">
         <div class="content-card">
@@ -369,11 +500,11 @@
         </div>
       </section>
 
-      <!-- 5. Team Tab -->
+      <!-- 7. Team Tab -->
       <section id="tab-team" class="tab-pane">
         <div class="content-card">
           <div class="card-header">
-            <h3>Team Profiles</h3>
+            <h3>Team Profiles · Image Cards &amp; PDFs</h3>
             <button class="btn btn-primary btn-sm" onclick="openTeamModal()" style="display:inline-flex; align-items:center; gap:6px;">
               <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Team Member
             </button>
@@ -386,6 +517,7 @@
                     <th>Full Name</th>
                     <th>Role / Title</th>
                     <th>Bio / Description</th>
+                    <th>Image Card &amp; PDF</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -475,6 +607,19 @@
           <label for="prop-description">Property Description / Summary</label>
           <textarea id="prop-description" placeholder="Brief details about the property..." rows="3"></textarea>
         </div>
+        <div class="form-group">
+          <label>Property Image (card thumbnail)</label>
+          <div class="image-uploader image-uploader--modal" data-key="propertyImage">
+            <div class="image-preview" data-preview></div>
+            <input type="file" accept="image/*" data-input style="display:none;">
+            <div class="image-uploader-actions">
+              <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose image</button>
+              <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+            </div>
+            <div class="hint">Optional. Will be shown as the property card's cover image. Recommended 4:3 ratio.</div>
+          </div>
+          <input type="hidden" id="prop-image" value="">
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="closeModal('property-modal')">Cancel</button>
@@ -536,6 +681,51 @@
         <div class="form-group">
           <label for="team-bio">Short Biography</label>
           <textarea id="team-bio" rows="3" placeholder="Brief professional background..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Image Card · Team Member Photo</label>
+          <div class="image-uploader image-uploader--modal" data-key="teamImage">
+            <div class="image-preview" data-preview></div>
+            <input type="file" accept="image/*" data-input style="display:none;">
+            <div class="image-uploader-actions">
+              <button type="button" class="btn btn-secondary btn-sm" data-browse><i data-lucide="upload"></i> Choose photo</button>
+              <button type="button" class="btn btn-danger btn-sm" data-clear><i data-lucide="trash-2"></i> Remove</button>
+            </div>
+            <div class="hint">Used as the image card displayed on the public "Our Team" section. Recommended 4:3 ratio portrait.</div>
+          </div>
+          <input type="hidden" id="team-image" value="">
+        </div>
+
+        <div style="border-top:1px dashed var(--line);margin:18px -20px;padding:18px 20px 4px;">
+          <h4 style="margin:0 0 14px;font-size:0.95rem;color:var(--ink);display:flex;align-items:center;gap:8px;">
+            <i data-lucide="file-text" style="width:16px;height:16px;color:var(--admin-primary);"></i>
+            Profile PDF Document
+          </h4>
+          <div class="form-group">
+            <label for="team-pdf-doc">Option 1 · Link to a Company Document</label>
+            <select id="team-pdf-doc" style="width:100%;">
+              <option value="">— No linked document —</option>
+              <!-- Options populated by admin.js -->
+            </select>
+            <div class="hint">Pick one of the company PDFs (Administration Hierarchy, Company Profile, etc.) to link to this member.</div>
+          </div>
+
+          <div class="form-group">
+            <label>Option 2 · Upload Custom Profile PDF</label>
+            <div class="pdf-uploader" id="team-pdf-uploader">
+              <div class="pdf-preview" data-pdf-preview>
+                <i data-lucide="file-off" style="width:22px;height:22px;opacity:0.5;"></i>
+                <span data-pdf-name>No PDF selected</span>
+              </div>
+              <input type="file" accept="application/pdf,.pdf" id="team-pdf-input" style="display:none;">
+              <div class="image-uploader-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="team-pdf-browse"><i data-lucide="upload"></i> Choose PDF</button>
+                <button type="button" class="btn btn-danger btn-sm" id="team-pdf-clear"><i data-lucide="trash-2"></i> Remove</button>
+              </div>
+              <div class="hint">Stored inline. Max ~1.5MB recommended for large PDFs.</div>
+            </div>
+            <input type="hidden" id="team-pdf" value="">
+          </div>
         </div>
       </div>
       <div class="modal-footer">

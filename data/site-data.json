@@ -22,6 +22,13 @@
     "adminUsername": "admin",
     "adminPassword": "rolkat2026"
   },
+  "images": {
+    "heroSlide1": "",
+    "heroSlide2": "",
+    "heroSlide3": "",
+    "aboutSplitPanel": "",
+    "ctaBanner": ""
+  },
   "services": [
     {
       "id": "srv-1",

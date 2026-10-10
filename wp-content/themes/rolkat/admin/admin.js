@@ -1,5 +1,6 @@
 let appData = null;
 let currentTab = "overview";
+let knownDocuments = []; // cache of public documents from /api/content
 
 function getAuthToken() {
   return sessionStorage.getItem("rolkat_admin_token") || localStorage.getItem("rolkat_admin_token");
@@ -95,8 +96,11 @@ async function loadAdminData() {
 
 function renderAll() {
   if (!appData) return;
+  knownDocuments = appData.documents || [];
   renderOverview();
   renderSettingsForm();
+  renderImagesTab();
+  renderDocumentsTab();
   renderProperties();
   renderServices();
   renderTeam();
@@ -113,12 +117,15 @@ function renderOverview() {
   const teamCount = (appData.team || []).length;
   const subs = appData.submissions || [];
   const newSubsCount = subs.filter((s) => s.status === "New").length;
+  const docCount = (knownDocuments || []).length;
 
   document.getElementById("stat-properties").textContent = propCount;
   document.getElementById("stat-services").textContent = servCount;
   document.getElementById("stat-team").textContent = teamCount;
   document.getElementById("stat-enquiries").textContent = subs.length;
   document.getElementById("badge-enquiries").textContent = newSubsCount > 0 ? newSubsCount : "";
+  const badgeDocs = document.getElementById("badge-documents");
+  if (badgeDocs) badgeDocs.textContent = docCount > 0 ? docCount : "";
 
   // Recent enquiries preview
   const recentTable = document.getElementById("recent-enquiries-table");
@@ -230,11 +237,20 @@ function renderProperties() {
       if (p.status === "Under offer") statusClass = "status-under-offer";
       if (p.status === "Sold / Rented" || p.status === "Sold" || p.status === "Rented") statusClass = "status-sold";
 
+      const thumb = p.image
+        ? `<div class="admin-thumb" style="background-image:url('${escapeHtml(p.image)}');"></div>`
+        : `<div class="admin-thumb admin-thumb--empty" data-lucide="image"></div>`;
+
       return `
       <tr>
         <td>
-          <strong>${escapeHtml(p.title)}</strong>
-          <div style="font-size:0.8rem;color:#666;">${escapeHtml(p.description || "")}</div>
+          <div class="title-with-thumb">
+            ${thumb}
+            <div>
+              <strong>${escapeHtml(p.title)}</strong>
+              <div style="font-size:0.8rem;color:#666;">${escapeHtml(p.description || "")}</div>
+            </div>
+          </div>
         </td>
         <td>${escapeHtml(p.location || "Kampala")}</td>
         <td><strong>${escapeHtml(p.price || "Contact for price")}</strong></td>
@@ -254,7 +270,9 @@ function openPropertyModal(id = null) {
   const form = document.getElementById("property-form");
   form.reset();
   document.getElementById("prop-modal-id").value = id || "";
+  document.getElementById("prop-image").value = "";
 
+  let existingImage = "";
   if (id) {
     const item = (appData.properties || []).find((p) => p.id === id);
     if (item) {
@@ -265,11 +283,22 @@ function openPropertyModal(id = null) {
       document.getElementById("prop-status").value = item.status;
       document.getElementById("prop-type").value = item.type || "Sale";
       document.getElementById("prop-description").value = item.description || "";
+      existingImage = item.image || "";
     }
   } else {
     document.getElementById("prop-modal-title").textContent = "Add Property Listing";
   }
+
+  setupImageUploader(
+    modal.querySelector(".image-uploader"),
+    existingImage,
+    (base64) => {
+      document.getElementById("prop-image").value = base64 || "";
+    }
+  );
+
   modal.classList.add("active");
+  if (window.lucide) window.lucide.createIcons();
 }
 
 async function handlePropertySubmit(e) {
@@ -283,6 +312,7 @@ async function handlePropertySubmit(e) {
     status: document.getElementById("prop-status").value,
     type: document.getElementById("prop-type").value,
     description: document.getElementById("prop-description").value.trim(),
+    image: document.getElementById("prop-image").value || "",
   };
 
   const method = id ? "PUT" : "POST";
@@ -421,23 +451,45 @@ function renderTeam() {
   if (!container) return;
   const list = appData.team || [];
   if (list.length === 0) {
-    container.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#666;">No team members found.</td></tr>`;
+    container.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#666;">No team members found. Add your first profile with image card &amp; PDF.</td></tr>`;
     return;
   }
   container.innerHTML = list
-    .map(
-      (m) => `
+    .map((m) => {
+      const thumb = m.image
+        ? `<div class="admin-thumb" style="background-image:url('${escapeHtml(m.image)}');"></div>`
+        : `<div class="admin-thumb admin-thumb--empty" data-lucide="user"></div>`;
+      const hasImg = m.image && String(m.image).length > 0;
+      const hasPdf = (m.pdf && String(m.pdf).length > 0) || (m.pdfUrl && String(m.pdfUrl).length > 0);
+      const pdfHref = (m.pdf && String(m.pdf).length > 0) ? m.pdf : (m.pdfUrl || "");
+
+      return `
     <tr>
-      <td><strong>${escapeHtml(m.name)}</strong></td>
+      <td>
+        <div class="title-with-thumb">
+          ${thumb}
+          <div><strong>${escapeHtml(m.name)}</strong></div>
+        </div>
+      </td>
       <td><span class="status-pill status-new">${escapeHtml(m.role || "")}</span></td>
       <td><span style="font-size:0.85rem;color:#555;">${escapeHtml(m.bio || "")}</span></td>
+      <td>
+        ${hasImg
+          ? `<span class="status-pill status-available" style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="image" style="width:12px;height:12px;"></i>Image</span>`
+          : `<span class="status-pill" style="background:#f1f5f9;color:#94a3b8;">No image</span>`}
+        <div style="margin-top:4px;">
+          ${hasPdf
+            ? `<a href="${escapeHtml(pdfHref)}" target="_blank" rel="noopener noreferrer" class="status-pill status-new" style="display:inline-flex;align-items:center;gap:4px;text-decoration:none;"><i data-lucide="file-text" style="width:12px;height:12px;"></i>PDF</a>`
+            : `<span class="status-pill" style="background:#f1f5f9;color:#94a3b8;">No PDF</span>`}
+        </div>
+      </td>
       <td>
         <button class="btn btn-secondary btn-sm" onclick="openTeamModal('${m.id}')" style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="pencil" style="width:12px;height:12px;"></i>Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteTeam('${m.id}')" style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="trash-2" style="width:12px;height:12px;"></i>Delete</button>
       </td>
     </tr>
-  `
-    )
+  `;
+    })
     .join("");
 }
 
@@ -446,7 +498,12 @@ function openTeamModal(id = null) {
   const form = document.getElementById("team-form");
   form.reset();
   document.getElementById("team-modal-id").value = id || "";
+  document.getElementById("team-image").value = "";
+  document.getElementById("team-pdf").value = "";
 
+  let existingImage = "";
+  let existingPdf = "";
+  let existingPdfIsUrl = false;
   if (id) {
     const item = (appData.team || []).find((m) => m.id === id);
     if (item) {
@@ -454,21 +511,154 @@ function openTeamModal(id = null) {
       document.getElementById("team-name").value = item.name;
       document.getElementById("team-role").value = item.role;
       document.getElementById("team-bio").value = item.bio;
+      existingImage = item.image || "";
+      // Determine if stored as base64 pdf or a URL like /documents/...
+      if (item.pdf && String(item.pdf).length > 0) {
+        existingPdf = item.pdf;
+        existingPdfIsUrl = !String(item.pdf).startsWith("data:");
+      } else if (item.pdfUrl && String(item.pdfUrl).length > 0) {
+        existingPdf = item.pdfUrl;
+        existingPdfIsUrl = true;
+      }
     }
   } else {
     document.getElementById("team-modal-title").textContent = "Add Team Member";
   }
+
+  // --- Image card uploader (existing pattern) ---
+  setupImageUploader(
+    modal.querySelector(".image-uploader"),
+    existingImage,
+    (base64) => {
+      document.getElementById("team-image").value = base64 || "";
+    }
+  );
+
+  // --- Company document dropdown ---
+  const docSelect = document.getElementById("team-pdf-doc");
+  if (docSelect) {
+    const currentOptions = `<option value="">— No linked document —</option>` +
+      (knownDocuments || []).map((d) => `<option value="${escapeHtml(d.url)}">${escapeHtml(d.label)}</option>`).join("");
+    docSelect.innerHTML = currentOptions;
+    // If existing pdf is a URL matching a known doc, select it
+    if (existingPdfIsUrl) {
+      const match = (knownDocuments || []).find((d) => d.url === existingPdf);
+      if (match) docSelect.value = match.url;
+    }
+    docSelect.onchange = () => {
+      // If user picks a doc, clear the custom upload
+      if (docSelect.value) {
+        document.getElementById("team-pdf").value = docSelect.value;
+        updatePdfPreview(docSelect.value, false, getPdfLabelFromUrl(docSelect.value));
+      } else if (!document.getElementById("team-pdf").value.startsWith("data:")) {
+        document.getElementById("team-pdf").value = "";
+        updatePdfPreview("", false, "");
+      }
+    };
+  }
+
+  // --- Custom PDF upload setup ---
+  const pdfInput = document.getElementById("team-pdf-input");
+  const pdfBrowseBtn = document.getElementById("team-pdf-browse");
+  const pdfClearBtn = document.getElementById("team-pdf-clear");
+  const pdfPreviewWrap = document.querySelector("#team-pdf-uploader [data-pdf-preview]");
+  const pdfPreviewName = document.querySelector("#team-pdf-uploader [data-pdf-name]");
+
+  function getPdfLabelFromUrl(url) {
+    const found = (knownDocuments || []).find((d) => d.url === url);
+    return found ? found.label : "";
+  }
+
+  function updatePdfPreview(val, isDataUrl, displayName) {
+    if (!pdfPreviewWrap) return;
+    const icon = pdfPreviewWrap.querySelector("svg, i");
+    const name = pdfPreviewWrap.querySelector("[data-pdf-name]") || pdfPreviewName;
+    if (val) {
+      if (icon) {
+        icon.setAttribute("data-lucide", "file-check");
+        icon.style.color = "#16A34A";
+        icon.style.opacity = "1";
+      }
+      if (name) {
+        name.textContent = displayName || (isDataUrl ? "Custom PDF (embedded)" : "Linked document");
+        name.style.fontWeight = "600";
+        name.style.color = "#0F172A";
+      }
+    } else {
+      if (icon) {
+        icon.setAttribute("data-lucide", "file-off");
+        icon.style.color = "";
+        icon.style.opacity = "0.5";
+      }
+      if (name) {
+        name.textContent = "No PDF selected";
+        name.style.fontWeight = "";
+        name.style.color = "";
+      }
+    }
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Prime initial preview
+  if (existingPdf) {
+    const label = existingPdfIsUrl ? getPdfLabelFromUrl(existingPdf) : "Custom PDF (embedded)";
+    updatePdfPreview(existingPdf, !existingPdfIsUrl, label);
+    document.getElementById("team-pdf").value = existingPdf;
+  } else {
+    updatePdfPreview("", false, "");
+  }
+
+  if (pdfBrowseBtn && pdfInput) {
+    pdfBrowseBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      pdfInput.click();
+    });
+  }
+  if (pdfInput) {
+    pdfInput.addEventListener("change", async () => {
+      const f = pdfInput.files && pdfInput.files[0];
+      if (!f) return;
+      try {
+        if (f.type && f.type !== "application/pdf") {
+          throw new Error("Please select a PDF file.");
+        }
+        const dataUrl = await fileToDataURL(f);
+        document.getElementById("team-pdf").value = dataUrl || "";
+        // Clear the company doc selection (custom upload takes precedence)
+        if (docSelect) docSelect.value = "";
+        updatePdfPreview(dataUrl, true, f.name);
+      } catch (err) { showToast(err.message, "error"); }
+      pdfInput.value = "";
+    });
+  }
+  if (pdfClearBtn) {
+    pdfClearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("team-pdf").value = "";
+      if (docSelect) docSelect.value = "";
+      updatePdfPreview("", false, "");
+    });
+  }
+
   modal.classList.add("active");
+  if (window.lucide) window.lucide.createIcons();
 }
 
 async function handleTeamSubmit(e) {
   e.preventDefault();
   const token = getAuthToken();
   const id = document.getElementById("team-modal-id").value;
+  const pdfVal = document.getElementById("team-pdf").value || "";
   const payload = {
     name: document.getElementById("team-name").value.trim(),
     role: document.getElementById("team-role").value.trim(),
     bio: document.getElementById("team-bio").value.trim(),
+    image: document.getElementById("team-image").value || "",
+    pdf: pdfVal,
+    // Backwards-compat: also set pdfUrl if it's a linked (non-data) URL
+    pdfUrl: (pdfVal && !String(pdfVal).startsWith("data:")) ? pdfVal : "",
   };
 
   const method = id ? "PUT" : "POST";
@@ -485,7 +675,7 @@ async function handleTeamSubmit(e) {
     });
     if (!res.ok) throw new Error("Failed to save team member");
     closeModal("team-modal");
-    showToast(id ? "Team profile updated!" : "Team profile created!", "success");
+    showToast(id ? "Team profile (with image card & PDF) updated!" : "Team profile (with image card & PDF) created!", "success");
     loadAdminData();
   } catch (err) {
     showToast(err.message, "error");
@@ -604,6 +794,210 @@ function exportSubmissionsCSV() {
   a.click();
 }
 
+// =======================================
+// IMAGE UPLOAD HELPERS & RENDERING
+// =======================================
+function fileToDataURL(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) { resolve(""); return; }
+    if (!file.type || file.type.indexOf("image/") !== 0) {
+      reject(new Error("Please select an image file (PNG, JPG, WebP, etc.)."));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(String(e.target.result || ""));
+    reader.onerror = () => reject(new Error("Failed to read image file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+function setupImageUploader(uploaderEl, initialValue, onChange) {
+  if (!uploaderEl) return;
+  const preview = uploaderEl.querySelector("[data-preview]");
+  const input = uploaderEl.querySelector("[data-input]");
+  const browseBtn = uploaderEl.querySelector("[data-browse]");
+  const clearBtn = uploaderEl.querySelector("[data-clear]");
+
+  function applyPreview(src) {
+    if (!preview) return;
+    if (src && typeof src === "string") {
+      preview.style.backgroundImage = `url('${src}')`;
+      preview.classList.add("has-image");
+      preview.classList.remove("is-empty");
+    } else {
+      preview.style.backgroundImage = "";
+      preview.classList.remove("has-image");
+      preview.classList.add("is-empty");
+    }
+  }
+
+  applyPreview(initialValue || "");
+
+  if (browseBtn && input) {
+    browseBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      input.click();
+    });
+  }
+
+  if (preview) {
+    preview.classList.add("is-empty");
+    if (initialValue) preview.classList.remove("is-empty");
+    preview.style.cursor = "pointer";
+    preview.addEventListener("click", () => { if (input) input.click(); });
+    preview.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploaderEl.classList.add("is-dragging");
+    });
+    preview.addEventListener("dragleave", () => uploaderEl.classList.remove("is-dragging"));
+    preview.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      uploaderEl.classList.remove("is-dragging");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        try {
+          const dataUrl = await fileToDataURL(e.dataTransfer.files[0]);
+          applyPreview(dataUrl);
+          if (onChange) onChange(dataUrl);
+        } catch (err) { showToast(err.message, "error"); }
+      }
+    });
+  }
+
+  if (input) {
+    input.addEventListener("change", async () => {
+      const f = input.files && input.files[0];
+      try {
+        const dataUrl = await fileToDataURL(f);
+        applyPreview(dataUrl);
+        if (onChange) onChange(dataUrl);
+      } catch (err) { showToast(err.message, "error"); }
+      // reset so same file can be re-selected
+      input.value = "";
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      applyPreview("");
+      if (onChange) onChange("");
+    });
+  }
+}
+
+async function saveImages(partialImages) {
+  const token = getAuthToken();
+  if (!token) return;
+  try {
+    const res = await fetch("/api/admin/images", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(partialImages),
+    });
+    if (res.ok) {
+      const result = await res.json();
+      if (appData) {
+        if (!appData.images) appData.images = {};
+        Object.assign(appData.images, result.images || partialImages);
+      }
+    } else {
+      throw new Error(`Server responded with ${res.status}`);
+    }
+  } catch (err) {
+    console.error("saveImages error:", err);
+    throw err;
+  }
+}
+
+function renderImagesTab() {
+  const tab = document.getElementById("tab-images");
+  if (!tab) return;
+  if (!appData.images) appData.images = { heroSlide1: "", heroSlide2: "", heroSlide3: "", aboutSplitPanel: "", ctaBanner: "" };
+
+  const uploaders = tab.querySelectorAll(".image-uploader[data-key]");
+  uploaders.forEach((up) => {
+    const key = up.getAttribute("data-key");
+    const current = (appData.images && appData.images[key]) || "";
+    setupImageUploader(up, current, async (newVal) => {
+      const payload = { [key]: newVal || "" };
+      try {
+        await saveImages(payload);
+        showToast(`${key} image saved.`, "success");
+      } catch (err) {
+        showToast(`Failed to save ${key}: ${err.message}`, "error");
+      }
+    });
+  });
+}
+
+// =======================================
+// DOCUMENTS & PDFs TAB
+// =======================================
+function renderDocumentsTab() {
+  const body = document.getElementById("documents-list-body");
+  if (!body) return;
+  const list = knownDocuments || [];
+
+  if (list.length === 0) {
+    body.innerHTML = `<div class="empty-state-inline"><i data-lucide="folder-x" style="width:22px;height:22px;opacity:0.5;"></i><div>No PDF documents found in the project root. Add .pdf files to the project folder to see them here.</div></div>`;
+  } else {
+    body.innerHTML = `<div class="document-grid">${list.map((d) => `
+      <div class="document-card">
+        <div class="document-icon"><i data-lucide="file-text" style="width:26px;height:26px;"></i></div>
+        <div class="document-meta">
+          <h4>${escapeHtml(d.label || d.file)}</h4>
+          <div class="muted-sm" style="font-size:12px;margin-top:2px;">${escapeHtml(d.file)}</div>
+        </div>
+        <div class="document-actions">
+          <a class="btn btn-secondary btn-sm" href="${escapeHtml(d.url)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:5px;">
+            <i data-lucide="external-link" style="width:12px;height:12px;"></i> Open
+          </a>
+          <a class="btn btn-primary btn-sm" href="${escapeHtml(d.url)}" download style="display:inline-flex;align-items:center;gap:5px;">
+            <i data-lucide="download" style="width:12px;height:12px;"></i> Download
+          </a>
+        </div>
+      </div>`).join("")}</div>`;
+  }
+
+  // Team doc assignments table
+  const assignTbody = document.getElementById("team-doc-assign-table");
+  if (assignTbody) {
+    const teamList = appData.team || [];
+    if (teamList.length === 0) {
+      assignTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;">No team members yet. Add a team profile to assign image cards and PDFs.</td></tr>`;
+    } else {
+      assignTbody.innerHTML = teamList.map((m) => {
+        const hasImg = m.image && String(m.image).length > 0;
+        const hasPdf = (m.pdf && String(m.pdf).length > 0) || (m.pdfUrl && String(m.pdfUrl).length > 0);
+        const pdfHref = (m.pdf && String(m.pdf).length > 0) ? m.pdf : (m.pdfUrl || "");
+        return `
+        <tr>
+          <td><strong>${escapeHtml(m.name)}</strong></td>
+          <td><span class="status-pill status-new">${escapeHtml(m.role || "")}</span></td>
+          <td>${hasImg
+            ? `<span class="status-pill status-available" style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="image" style="width:12px;height:12px;"></i> Image card set</span>`
+            : `<span class="status-pill" style="background:#f1f5f9;color:#64748b;"><i data-lucide="image-off" style="width:12px;height:12px;"></i> No image</span>`}</td>
+          <td>${hasPdf
+            ? `<a href="${escapeHtml(pdfHref)}" target="_blank" rel="noopener noreferrer" class="status-pill status-available" style="display:inline-flex;align-items:center;gap:4px;text-decoration:none;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> View PDF</a>`
+            : `<span class="status-pill" style="background:#f1f5f9;color:#64748b;"><i data-lucide="file-x" style="width:12px;height:12px;"></i> No PDF</span>`}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="openTeamModal('${m.id}')" style="display:inline-flex;align-items:center;gap:4px;">
+              <i data-lucide="pencil" style="width:12px;height:12px;"></i> Edit profile
+            </button>
+          </td>
+        </tr>`;
+      }).join("");
+    }
+  }
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
 // Navigation & Modals
 function switchTab(tabId) {
   currentTab = tabId;
@@ -617,9 +1011,11 @@ function switchTab(tabId) {
   const titleMap = {
     overview: "Dashboard Overview",
     settings: "Site & Admin Settings",
+    images: "Website Images Manager",
+    documents: "Documents & PDFs Manager",
     properties: "Property Listings Manager",
     services: "Services Manager",
-    team: "Team Profiles Manager",
+    team: "Team Profiles & Image Cards Manager",
     submissions: "Client Enquiries",
   };
   document.getElementById("current-page-title").textContent = titleMap[tabId] || "Dashboard";
